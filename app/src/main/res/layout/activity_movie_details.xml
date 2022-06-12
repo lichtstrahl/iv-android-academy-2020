@@ -244,12 +244,12 @@
             android:layout_width="@dimen/cast_avatar_size"
             android:layout_height="@dimen/cast_avatar_size"
             app:layout_constraintStart_toStartOf="@id/castHeader"
+            app:layout_constraintEnd_toStartOf="@id/chrisAvatar"
             app:layout_constraintTop_toBottomOf="@id/castHeader"
-
-
+            android:layout_marginRight="4dp"
+            app:layout_constraintDimensionRatio="1"
             android:src="@drawable/robert"
             android:contentDescription="@string/default_actor_descr"/>
-
         <TextView
             android:id="@+id/robertName"
             android:layout_width="0dp"
@@ -269,10 +269,10 @@
             app:layout_constraintEnd_toStartOf="@id/markAvatar"
             app:layout_constraintTop_toTopOf="@id/robertAvatar"
             app:layout_constraintBottom_toBottomOf="@id/robertAvatar"
-
+            android:layout_marginHorizontal="4dp"
+            app:layout_constraintDimensionRatio="1"
             android:src="@drawable/chris"
-            android:contentDescription="@string/default_actor_descr"
-            />
+            android:contentDescription="@string/default_actor_descr" />
         <TextView
             android:id="@+id/chrisName"
             android:layout_width="0dp"
@@ -292,10 +292,10 @@
             app:layout_constraintStart_toEndOf="@id/chrisAvatar"
             app:layout_constraintEnd_toStartOf="@id/chris2Avatar"
             app:layout_constraintBottom_toBottomOf="@id/chrisAvatar"
-
+            android:layout_marginHorizontal="4dp"
+            app:layout_constraintDimensionRatio="1"
             android:src="@drawable/mark"
             android:contentDescription="@string/default_actor_descr"/>
-
         <TextView
             android:id="@+id/markName"
             android:layout_width="0dp"
@@ -314,11 +314,11 @@
             android:contentDescription="@string/default_actor_descr"
             android:src="@drawable/chris2"
             app:layout_constraintBottom_toBottomOf="@id/markAvatar"
-
-            app:layout_constraintEnd_toEndOf="@id/castHeader"
             app:layout_constraintTop_toTopOf="@id/markAvatar"
-            app:layout_constraintVertical_bias="0.0" />
-
+            app:layout_constraintEnd_toEndOf="@id/castHeader"
+            app:layout_constraintStart_toEndOf="@id/markAvatar"
+            android:layout_marginStart="4dp"
+            app:layout_constraintDimensionRatio="1" />
         <TextView
             android:id="@+id/chris2Name"
             android:layout_width="0dp"
