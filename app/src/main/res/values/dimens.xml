@@ -10,7 +10,9 @@
 
     <!-- size -->
     <dimen name="star_height">12dp</dimen>
+    <dimen name="star_width">12dp</dimen>
+    <dimen name="star_mini_h">8dp</dimen>
+    <dimen name="star_mini_w">8dp</dimen>
     <dimen name="cast_avatar_size">0dp</dimen>
-    <dimen name="star_width">13dp</dimen>
 
 </resources>

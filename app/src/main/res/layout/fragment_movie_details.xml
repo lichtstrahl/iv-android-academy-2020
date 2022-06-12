@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/detailsBackground">
+    android:background="@color/mainBackground">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -135,49 +135,19 @@
 
             <ImageView
                 android:id="@+id/start1"
-                android:layout_width="@dimen/star_width"
-                android:layout_height="@dimen/star_height"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_star"
-                android:layout_marginHorizontal="2dp"
-                app:tint="@color/colorDisableStar"
-                android:contentDescription="@string/star"/>
+                style="@style/ActionStar"/>
             <ImageView
                 android:id="@+id/star2"
-                android:layout_width="@dimen/star_width"
-                android:layout_height="@dimen/star_height"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_star"
-                android:layout_marginHorizontal="2dp"
-                app:tint="@color/colorDisableStar"
-                android:contentDescription="@string/star"/>
+                style="@style/ActionStar"/>
             <ImageView
                 android:id="@+id/star3"
-                android:layout_width="@dimen/star_width"
-                android:layout_height="@dimen/star_height"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_star"
-                android:layout_marginHorizontal="2dp"
-                app:tint="@color/colorDisableStar"
-                android:contentDescription="@string/star"/>
+                style="@style/ActionStar"/>
             <ImageView
                 android:id="@+id/star4"
-                android:layout_width="@dimen/star_width"
-                android:layout_height="@dimen/star_height"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_star"
-                android:layout_marginHorizontal="2dp"
-                app:tint="@color/colorDisableStar"
-                android:contentDescription="@string/star"/>
+                style="@style/ActionStar"/>
             <ImageView
                 android:id="@+id/star5"
-                android:layout_width="@dimen/star_width"
-                android:layout_height="@dimen/star_height"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_star"
-                android:layout_marginHorizontal="2dp"
-                app:tint="@color/colorDisableStar"
-                android:contentDescription="@string/star"/>
+                style="@style/DisableStar"/>
 
             <TextView
                 android:id="@+id/viewReviewCount"

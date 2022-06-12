@@ -5,7 +5,7 @@
     <color name="colorAccent">#FF3466</color>
 
 
-    <color name="detailsBackground">#191926</color>
+    <color name="mainBackground">#191926</color>
     <color name="colorDisableStar">#6D6D80</color>
 
 </resources>
