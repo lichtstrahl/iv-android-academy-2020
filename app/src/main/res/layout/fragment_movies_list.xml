@@ -41,6 +41,16 @@
         android:textSize="14sp"
         android:text="@string/movies_header" />
 
-    <include layout="@layout/film_card"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/moviesList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/target"
+        app:layout_constraintBottom_toBottomOf="parent"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:listitem="@layout/film_card"
+        android:layout_margin="@dimen/margin_horizontal_std"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

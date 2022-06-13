@@ -14,7 +14,7 @@
         <item name="maxLines">2</item>
     </style>
 
-    <style name="ActionStar">
+    <style name="Star">
         <item name="android:layout_width">@dimen/star_width</item>
         <item name="android:layout_height">@dimen/star_height</item>
         <item name="android:layout_gravity">center_vertical</item>
@@ -23,17 +23,10 @@
         <item name="contentDescription">@string/default_logo_desc</item>
     </style>
 
-    <style name="DisableStar" parent="ActionStar">
-        <item name="tint">@color/colorDisableStar</item>
-    </style>
-
-    <style name="ActionMiniStar" parent="ActionStar">
+    <style name="MiniStar" parent="Star">
         <item name="android:layout_width">@dimen/star_mini_w</item>
         <item name="android:layout_height">@dimen/star_mini_h</item>
     </style>
 
-    <style name="DisableMiniStar" parent="ActionMiniStar">
-        <item name="tint">@color/colorDisableStar</item>
-    </style>
 
 </resources>

@@ -1,9 +1,9 @@
-package root.iv.ivandroidacademy.activity
+package root.iv.ivandroidacademy.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import root.iv.ivandroidacademy.R
-import root.iv.ivandroidacademy.fragment.MoviesListFragment
+import root.iv.ivandroidacademy.ui.fragment.MoviesListFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

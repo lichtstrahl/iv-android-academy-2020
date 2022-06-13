@@ -1,4 +1,4 @@
-package root.iv.ivandroidacademy.fragment
+package root.iv.ivandroidacademy.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

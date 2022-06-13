@@ -134,20 +134,20 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/start1"
-                style="@style/ActionStar"/>
+                android:id="@+id/star_1"
+                style="@style/Star"/>
             <ImageView
                 android:id="@+id/star2"
-                style="@style/ActionStar"/>
+                style="@style/Star"/>
             <ImageView
                 android:id="@+id/star3"
-                style="@style/ActionStar"/>
+                style="@style/Star"/>
             <ImageView
                 android:id="@+id/star4"
-                style="@style/ActionStar"/>
+                style="@style/Star"/>
             <ImageView
                 android:id="@+id/star5"
-                style="@style/DisableStar"/>
+                style="@style/Star"/>
 
             <TextView
                 android:id="@+id/viewReviewCount"
