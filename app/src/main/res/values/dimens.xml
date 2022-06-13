@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="details_top_menu_height">40dp</dimen>
-    <dimen name="details_top_menu_top_margin">44dp</dimen>
+    <dimen name="details_top_menu_top_margin">30dp</dimen>
 
     <!-- text size -->
     <dimen name="text_size_std">14sp</dimen>
