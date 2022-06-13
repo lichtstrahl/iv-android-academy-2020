@@ -29,7 +29,7 @@ object DataRepository {
         Actor(
             id = 5,
             name = "Scarlett Johansson",
-            photoUrl = "http://images6.fanpop.com/image/photos/42700000/Scarlett-Johansson-scarlett-johansson-42744568-1200-1600.jpg"
+            photoUrl = "https://i.discogs.com/U6Fjw9wGGRpyU5Tz6z6m-RSVw2qu7BLPaaflR01jNYg/rs:fit/g:sm/q:40/h:300/w:300/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTExMTI5/NzctMTUzNDY2Mzk3/Ny0yNTMzLmpwZWc.jpeg"
         ),
         Actor(
             id = 6,
