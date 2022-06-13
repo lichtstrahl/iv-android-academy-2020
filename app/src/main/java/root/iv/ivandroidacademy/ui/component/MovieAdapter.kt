@@ -16,7 +16,8 @@ import root.iv.ivandroidacademy.databinding.FilmCardBinding
 import kotlin.math.roundToInt
 
 class MovieAdapter(
-    private val movies: List<Movie> = listOf()
+    private val movies: List<Movie> = listOf(),
+    private val listener: (Movie) -> Unit
 ): RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
 
@@ -64,7 +65,7 @@ class MovieAdapter(
                 .load(movie.poster)
                 .into(backgroundLogoTarget)
             rankGroup.draw(movie.rating.roundToInt())
-            reviewCount.text = movie.reviewsCount.toString()
+            reviewCount.text = "${movie.reviewsCount} REVIEWS"
             title.text = movie.title
             time.text = "${movie.duration} MIN"
         }
@@ -75,7 +76,14 @@ class MovieAdapter(
         .inflate(R.layout.film_card, parent, false)
         .let { MovieViewHolder(it) }
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) = holder.bind(movies[position])
+    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) = holder
+        .bind(movies[position])
+        .apply { holder.itemView.setOnClickListener { listener.invoke(movies[position]) } }
+
 
     override fun getItemCount(): Int = movies.size
+
+    fun aaa() {
+
+    }
 }

@@ -56,7 +56,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/logoBorder"
-            android:background="@drawable/film_logo"
             android:src="@drawable/details_header_gradient"
             android:scaleType="centerCrop"
             android:contentDescription="@string/default_logo_desc" />
