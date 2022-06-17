@@ -18,7 +18,7 @@ class Mapper {
     fun movie(dto: MovieDTO, genres: List<Genre>) = Movie(
         dto.id,
         dto.title,
-        genres.joinToString(separator = ",") { it.name },
+        genres.joinToString(separator = ", ") { it.name },
         dto.duration,
         if (dto.adult) 16 else 13,
         dto.rating/2,
