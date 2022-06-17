@@ -10,16 +10,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import root.iv.ivandroidacademy.R
-import root.iv.ivandroidacademy.data.model.dto.MovieDTO
+import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FilmCardBinding
 import kotlin.math.roundToInt
 
 class MovieAdapter(
-    private val movies: List<MovieDTO> = listOf(),
-    private val listener: (MovieDTO) -> Unit
+    private var movies: List<Movie> = listOf(),
+    private val listener: (Movie) -> Unit
 ): RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
-
 
     class MovieViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -44,9 +45,9 @@ class MovieAdapter(
                 .apply { this@MovieViewHolder.time = this.time }
         }
 
-        fun bind(movie: MovieDTO) {
-            ageLimit.text = movie.pg
-            tag.text = movie.genreIds
+        fun bind(movie: Movie) {
+            ageLimit.text = "${movie.ageLimit}+"
+            tag.text = movie.tags
 
             val backgroundLogoTarget = object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
@@ -62,10 +63,10 @@ class MovieAdapter(
 
             }
             Glide.with(this.itemView.context)
-                .load(movie.posterPath)
+                .load(movie.poster)
                 .into(backgroundLogoTarget)
             rankGroup.draw(movie.rating.roundToInt())
-            reviewCount.text = "${movie.votesCount} REVIEWS"
+            reviewCount.text = "${movie.reviewsCount} REVIEWS"
             title.text = movie.title
             time.text = "${movie.duration} MIN"
         }
@@ -83,7 +84,8 @@ class MovieAdapter(
 
     override fun getItemCount(): Int = movies.size
 
-    fun aaa() {
-
+    suspend fun resetData(movies: List<Movie>) = withContext(Dispatchers.Main) {
+        this@MovieAdapter.movies = movies
+        notifyDataSetChanged()
     }
 }

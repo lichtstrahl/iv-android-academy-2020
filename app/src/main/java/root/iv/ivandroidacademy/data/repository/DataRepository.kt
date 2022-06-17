@@ -4,8 +4,12 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.serializer
 import root.iv.ivandroidacademy.data.mapper.Mapper
 import root.iv.ivandroidacademy.data.model.Actor
 import root.iv.ivandroidacademy.data.model.Genre
@@ -29,8 +33,10 @@ class DataRepository(
 
     private val moviesLoader = object : Repository<Movie> {
         override suspend fun loadAll(): List<Movie> = withContext(Dispatchers.IO) {
+            val genresMap = genresLoader.loadAll().associateBy(Genre::id)
+
             inputMovies.loadDto<MovieDTO>()
-                .map { mapper.movie(it) }
+                .map { movieDto -> mapper.movie(movieDto, genresMap.filter { movieDto.genreIds.contains(it.key) }.map { it.value }) }
         }
 
         override suspend fun load(id: Int): Movie? = withContext(Dispatchers.IO) {
@@ -64,12 +70,14 @@ class DataRepository(
     constructor(context: Context): this(
         context.assets.open("genres.json"),
         context.assets.open("data.json"),
-        context.assets.open("actors.json")
+        context.assets.open("people.json")
     )
 
     suspend fun movies() = moviesLoader.loadAll()
 
-    suspend fun actor(ids: List<Int>) = actorsLoader.loadAll().filter { ids.contains(it.id) }
+    suspend fun movie(id: Int) = moviesLoader.load(id)
+
+    suspend fun actors(ids: List<Int>) = actorsLoader.loadAll().filter { ids.contains(it.id) }
 
     suspend fun genres(ids: List<Int>) = genresLoader.loadAll().filter { ids.contains(it.id) }
 
@@ -83,8 +91,9 @@ class DataRepository(
     // PRIVATE
     // ---
 
-    private fun <T> InputStream.loadDto(): List<T> = this.bufferedReader().readText()
-        .let { jsonParser.decodeFromString(it) }
+    private inline fun <reified T: Any> InputStream.loadDto(serializer: KSerializer<T> = serializer()): List<T> = this.bufferedReader().readText()
+        .let { jsonParser.decodeFromString(JsonArray.serializer(), it) }
+        .map { jsonParser.decodeFromJsonElement(serializer, it) }
 
     private fun <T> T?.orThrow(throwSupplier: () -> Throwable): T = this ?: throw throwSupplier.invoke()
 }

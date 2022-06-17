@@ -7,12 +7,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import root.iv.ivandroidacademy.R
-import root.iv.ivandroidacademy.data.model.dto.ActorDTO
+import root.iv.ivandroidacademy.data.model.Actor
 import root.iv.ivandroidacademy.databinding.ActorCardBinding
 
 class ActorAdapter(
-    private val actors: List<ActorDTO> = listOf()
+    private var actors: List<Actor> = listOf()
 ): RecyclerView.Adapter<ActorAdapter.ActorViewHolder>() {
 
     class ActorViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -25,7 +27,7 @@ class ActorAdapter(
                 .apply { this@ActorViewHolder.name = this.name }
         }
 
-        fun bind(actor: ActorDTO) {
+        fun bind(actor: Actor) {
             name.text = actor.name
             Glide.with(itemView.context)
                 .load(actor.photoUrl)
@@ -42,4 +44,8 @@ class ActorAdapter(
 
     override fun getItemCount(): Int = actors.size
 
+    suspend fun resetData(actors: List<Actor>) = withContext(Dispatchers.Main) {
+        this@ActorAdapter.actors = actors
+        notifyDataSetChanged()
+    }
 }

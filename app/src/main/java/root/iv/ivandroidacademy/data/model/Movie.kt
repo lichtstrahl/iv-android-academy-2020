@@ -3,7 +3,7 @@ package root.iv.ivandroidacademy.data.model
 data class Movie(
     val id: Int = 0,
     val title: String = "",
-    val tags: List<Int> = listOf(),
+    val tags: String = "",
     val duration: Int = 0,
     val ageLimit: Int = 0,
     val rating: Float = 0f,

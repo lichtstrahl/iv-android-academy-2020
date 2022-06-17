@@ -15,13 +15,13 @@ class Mapper {
         dto.photoUrl
     )
 
-    fun movie(dto: MovieDTO) = Movie(
+    fun movie(dto: MovieDTO, genres: List<Genre>) = Movie(
         dto.id,
         dto.title,
-        dto.genreIds,
+        genres.joinToString(separator = ",") { it.name },
         dto.duration,
         if (dto.adult) 16 else 13,
-        dto.rating,
+        dto.rating/2,
         dto.votesCount,
         dto.posterPath,
         dto.posterBackdropPath,
