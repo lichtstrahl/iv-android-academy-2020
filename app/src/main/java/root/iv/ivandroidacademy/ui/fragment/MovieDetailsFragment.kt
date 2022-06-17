@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import root.iv.ivandroidacademy.R
-import root.iv.ivandroidacademy.data.DataRepository
-import root.iv.ivandroidacademy.data.model.Movie
+import root.iv.ivandroidacademy.data.repository.DataRepository
+import root.iv.ivandroidacademy.data.model.dto.MovieDTO
 import root.iv.ivandroidacademy.databinding.FragmentMovieDetailsBinding
 import root.iv.ivandroidacademy.ui.component.ActorAdapter
 import root.iv.ivandroidacademy.ui.component.RankGroup
@@ -77,17 +77,17 @@ class MovieDetailsFragment: Fragment() {
         .apply { this@MovieDetailsFragment.reviewCount = this.reviewCountView }
         .apply { this@MovieDetailsFragment.story = this.viewStoryline }
 
-    private fun drawMovie(movie: Movie) {
+    private fun drawMovie(movie: MovieDTO) {
         Glide.with(this.requireContext())
-            .load(movie.poster)
+            .load(movie.posterPath)
             .into(backgroundLogo)
 
         ageLimit.text = movie.pg
         title.text = movie.title
-        tags.text = movie.tags
+        tags.text = movie.genreIds
         rankGroup.draw(movie.rating.roundToInt())
-        reviewCount.text = "${movie.reviewsCount} REVIEWS"
-        story.text = movie.storyLine
+        reviewCount.text = "${movie.votesCount} REVIEWS"
+        story.text = movie.overview
     }
 
     private fun back(view: View) = this.requireActivity().onBackPressed()

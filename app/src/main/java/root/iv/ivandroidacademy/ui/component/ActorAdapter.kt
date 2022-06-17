@@ -8,11 +8,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import root.iv.ivandroidacademy.R
-import root.iv.ivandroidacademy.data.model.Actor
+import root.iv.ivandroidacademy.data.model.dto.ActorDTO
 import root.iv.ivandroidacademy.databinding.ActorCardBinding
 
 class ActorAdapter(
-    private val actors: List<Actor> = listOf()
+    private val actors: List<ActorDTO> = listOf()
 ): RecyclerView.Adapter<ActorAdapter.ActorViewHolder>() {
 
     class ActorViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -25,7 +25,7 @@ class ActorAdapter(
                 .apply { this@ActorViewHolder.name = this.name }
         }
 
-        fun bind(actor: Actor) {
+        fun bind(actor: ActorDTO) {
             name.text = actor.name
             Glide.with(itemView.context)
                 .load(actor.photoUrl)

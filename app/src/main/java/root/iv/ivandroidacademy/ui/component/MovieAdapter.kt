@@ -11,13 +11,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import root.iv.ivandroidacademy.R
-import root.iv.ivandroidacademy.data.model.Movie
+import root.iv.ivandroidacademy.data.model.dto.MovieDTO
 import root.iv.ivandroidacademy.databinding.FilmCardBinding
 import kotlin.math.roundToInt
 
 class MovieAdapter(
-    private val movies: List<Movie> = listOf(),
-    private val listener: (Movie) -> Unit
+    private val movies: List<MovieDTO> = listOf(),
+    private val listener: (MovieDTO) -> Unit
 ): RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
 
@@ -44,9 +44,9 @@ class MovieAdapter(
                 .apply { this@MovieViewHolder.time = this.time }
         }
 
-        fun bind(movie: Movie) {
+        fun bind(movie: MovieDTO) {
             ageLimit.text = movie.pg
-            tag.text = movie.tags
+            tag.text = movie.genreIds
 
             val backgroundLogoTarget = object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
@@ -62,10 +62,10 @@ class MovieAdapter(
 
             }
             Glide.with(this.itemView.context)
-                .load(movie.poster)
+                .load(movie.posterPath)
                 .into(backgroundLogoTarget)
             rankGroup.draw(movie.rating.roundToInt())
-            reviewCount.text = "${movie.reviewsCount} REVIEWS"
+            reviewCount.text = "${movie.votesCount} REVIEWS"
             title.text = movie.title
             time.text = "${movie.duration} MIN"
         }

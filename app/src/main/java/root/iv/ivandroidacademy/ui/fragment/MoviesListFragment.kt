@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import root.iv.ivandroidacademy.R
-import root.iv.ivandroidacademy.data.DataRepository
-import root.iv.ivandroidacademy.data.model.Movie
+import root.iv.ivandroidacademy.data.repository.DataRepository
+import root.iv.ivandroidacademy.data.model.dto.MovieDTO
 import root.iv.ivandroidacademy.databinding.FragmentMoviesListBinding
 import root.iv.ivandroidacademy.ui.component.MovieAdapter
 
@@ -40,7 +40,7 @@ class MoviesListFragment: Fragment() {
     private fun binding(view: View) = FragmentMoviesListBinding.bind(view)
         .apply { moviesListView = moviesList }
 
-    private fun onMovieClick(movie: Movie) {
+    private fun onMovieClick(movie: MovieDTO) {
 
         requireActivity().supportFragmentManager
             .beginTransaction()
