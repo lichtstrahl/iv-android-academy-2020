@@ -13,4 +13,10 @@ data class Movie(
     val isLike: Boolean = false,
     val storyline: String = "",
     val actorIds: List<Int> = listOf(),
-)
+): DiffUtilModel {
+    override fun id(): Long = this.id.toLong()
+
+    override fun same(other: DiffUtilModel): Boolean = this == other
+
+
+}

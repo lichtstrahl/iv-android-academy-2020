@@ -7,15 +7,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Actor
 import root.iv.ivandroidacademy.databinding.ActorCardBinding
+import root.iv.ivandroidacademy.ui.component.adapter.DiffUtilAdapter
 
 class ActorAdapter(
-    private var actors: List<Actor> = listOf()
-): RecyclerView.Adapter<ActorAdapter.ActorViewHolder>() {
+    actors: List<Actor> = listOf()
+): DiffUtilAdapter<Actor, ActorAdapter.ActorViewHolder>(actors, {}) {
 
     class ActorViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val avatar: ImageView
@@ -40,12 +39,7 @@ class ActorAdapter(
         .inflate(R.layout.actor_card, parent, false)
         .let { ActorViewHolder(it) }
 
-    override fun onBindViewHolder(holder: ActorViewHolder, position: Int) = holder.bind(actors[position])
+    override fun onBindViewHolder(holder: ActorViewHolder, position: Int) = holder.bind(content[position])
 
-    override fun getItemCount(): Int = actors.size
-
-    suspend fun resetData(actors: List<Actor>) = withContext(Dispatchers.Main) {
-        this@ActorAdapter.actors = actors
-        notifyDataSetChanged()
-    }
+    override fun getItemCount(): Int = content.size
 }

@@ -10,17 +10,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FilmCardBinding
+import root.iv.ivandroidacademy.ui.component.adapter.DiffUtilAdapter
 import kotlin.math.roundToInt
 
 class MovieAdapter(
-    private var movies: List<Movie> = listOf(),
-    private val listener: (Movie) -> Unit
-): RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+    movies: List<Movie> = listOf(),
+    listener: (Movie) -> Unit
+): DiffUtilAdapter<Movie, MovieAdapter.MovieViewHolder>(movies, listener) {
 
     class MovieViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -78,14 +77,9 @@ class MovieAdapter(
         .let { MovieViewHolder(it) }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) = holder
-        .bind(movies[position])
-        .apply { holder.itemView.setOnClickListener { listener.invoke(movies[position]) } }
+        .bind(content[position])
+        .apply { holder.itemView.setOnClickListener { listener.invoke(content[position]) } }
 
 
-    override fun getItemCount(): Int = movies.size
-
-    suspend fun resetData(movies: List<Movie>) = withContext(Dispatchers.Main) {
-        this@MovieAdapter.movies = movies
-        notifyDataSetChanged()
-    }
+    override fun getItemCount(): Int = content.size
 }
