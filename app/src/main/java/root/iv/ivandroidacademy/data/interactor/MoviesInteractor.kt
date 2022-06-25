@@ -6,7 +6,7 @@ import java.io.Closeable
 
 class MoviesInteractor(
     private val dataRepository: DataRepository
-): Closeable by dataRepository {
+) {
 
-    suspend fun movies(): List<Movie> = dataRepository.use { it.movies() }
+    suspend fun movies(): List<Movie> = dataRepository.movies()
 }

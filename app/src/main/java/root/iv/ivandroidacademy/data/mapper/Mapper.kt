@@ -1,5 +1,6 @@
 package root.iv.ivandroidacademy.data.mapper
 
+import root.iv.ivandroidacademy.BuildConfig
 import root.iv.ivandroidacademy.data.model.Actor
 import root.iv.ivandroidacademy.data.model.Genre
 import root.iv.ivandroidacademy.data.model.Movie
@@ -23,11 +24,10 @@ class Mapper {
         if (dto.adult) 16 else 13,
         dto.rating/2,
         dto.votesCount,
-        dto.posterPath,
-        dto.posterBackdropPath,
+        BuildConfig.MOVIE_BASE_URL+dto.posterPath,
+        BuildConfig.MOVIE_BASE_URL+dto.posterBackdropPath,
         false,
-        dto.overview,
-        dto.actorIds
+        dto.overview
     )
 
     fun genre(dto: GenreDTO) = Genre(

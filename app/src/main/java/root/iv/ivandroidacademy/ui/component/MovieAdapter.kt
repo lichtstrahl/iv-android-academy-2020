@@ -67,7 +67,7 @@ class MovieAdapter(
             rankGroup.draw(movie.rating.roundToInt())
             reviewCount.text = "${movie.reviewsCount} REVIEWS"
             title.text = movie.title
-            time.text = "${movie.duration} MIN"
+            time.text = movie.duration?.let { "$it MIN" } ?: "-"
         }
     }
 

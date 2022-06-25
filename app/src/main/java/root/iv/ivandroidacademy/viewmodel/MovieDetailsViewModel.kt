@@ -31,8 +31,7 @@ class MovieDetailsViewModel(
         scope.launch {
             movieInteractor.movie(movieId)
                 ?.also { internalMovie.postValue(it) }
-                ?.actorIds
-                ?.let { actorsInteractor.actors(it) }
+                ?.let { actorsInteractor.actors(movieId) }
                 ?.also { internalActors.postValue(it) }
         }
     }

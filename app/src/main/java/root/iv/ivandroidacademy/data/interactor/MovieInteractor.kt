@@ -7,5 +7,5 @@ class MovieInteractor(
     private val dataRepository: DataRepository
 ) {
 
-    suspend fun movie(movieId: Int): Movie? = dataRepository.use { it.movie(movieId) }
+    suspend fun movie(movieId: Int): Movie? = dataRepository.movie(movieId)
 }

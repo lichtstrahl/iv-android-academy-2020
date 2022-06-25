@@ -1,7 +1,16 @@
 package root.iv.ivandroidacademy.app
 
 import android.app.Application
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.create
+import root.iv.ivandroidacademy.BuildConfig
 import root.iv.ivandroidacademy.data.repository.DataRepository
+import root.iv.ivandroidacademy.network.interceptor.ApiKeyInterceptor
 
 class App: Application() {
 
@@ -9,8 +18,22 @@ class App: Application() {
         lateinit var dataRepository: DataRepository
     }
 
+    private val json = Json { ignoreUnknownKeys = true }
+
     override fun onCreate() {
         super.onCreate()
-        dataRepository = DataRepository(this)
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor(ApiKeyInterceptor())
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .build()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BuildConfig.MOVIE_BASE_URL)
+            .client(client)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
+
+        dataRepository = DataRepository(retrofit.create())
     }
 }
