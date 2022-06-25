@@ -1,6 +1,5 @@
 package root.iv.ivandroidacademy.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,24 +7,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import root.iv.ivandroidacademy.R
+import root.iv.ivandroidacademy.app.App
+import root.iv.ivandroidacademy.data.interactor.MoviesInteractor
 import root.iv.ivandroidacademy.data.model.Movie
-import root.iv.ivandroidacademy.data.repository.DataRepository
 import root.iv.ivandroidacademy.databinding.FragmentMoviesListBinding
+import root.iv.ivandroidacademy.presenter.MoviesPresenter
 import root.iv.ivandroidacademy.ui.component.MovieAdapter
 
-@ExperimentalSerializationApi
-class MoviesListFragment: Fragment() {
+class MoviesListFragment: Fragment(), MoviesPresenter.View {
 
     private lateinit var moviesListView: RecyclerView
     private lateinit var moviesAdapter: MovieAdapter
-    private lateinit var dataRepository: DataRepository
-    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    private val presenter: MoviesPresenter = MoviesPresenter(
+        MoviesInteractor(App.dataRepository)
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,24 +38,28 @@ class MoviesListFragment: Fragment() {
         return view
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        dataRepository = DataRepository(this.requireContext())
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        presenter.attach(this)
     }
 
     override fun onStart() {
         super.onStart()
-        coroutineScope.launch { moviesAdapter.resetData(dataRepository.movies()) }
+        presenter.loadMovies()
     }
 
-    override fun onStop() {
-        super.onStop()
-        coroutineScope.cancel()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.detach()
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        dataRepository.close()
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.cancel()
+    }
+
+    override suspend fun viewMoviesList(movies: List<Movie>) {
+        moviesAdapter.resetData(movies)
     }
 
     // ---

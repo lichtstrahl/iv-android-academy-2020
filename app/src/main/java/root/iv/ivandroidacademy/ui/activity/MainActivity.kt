@@ -6,6 +6,7 @@ import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.ui.fragment.MoviesListFragment
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

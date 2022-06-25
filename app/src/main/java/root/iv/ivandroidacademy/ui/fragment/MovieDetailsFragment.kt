@@ -15,7 +15,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
 import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.data.repository.DataRepository
@@ -24,7 +23,6 @@ import root.iv.ivandroidacademy.ui.component.ActorAdapter
 import root.iv.ivandroidacademy.ui.component.RankGroup
 import kotlin.math.roundToInt
 
-@ExperimentalSerializationApi
 class MovieDetailsFragment: Fragment() {
 
     private lateinit var actorsListView: RecyclerView

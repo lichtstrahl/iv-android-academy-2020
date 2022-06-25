@@ -3,12 +3,9 @@ package root.iv.ivandroidacademy.data.repository
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.serializer
 import root.iv.ivandroidacademy.data.mapper.Mapper
 import root.iv.ivandroidacademy.data.model.Actor
@@ -21,7 +18,6 @@ import java.io.Closeable
 import java.io.InputStream
 
 
-@ExperimentalSerializationApi
 class DataRepository(
     private val inputGenres: InputStream,
     private val inputMovies: InputStream,
@@ -79,21 +75,19 @@ class DataRepository(
 
     suspend fun actors(ids: List<Int>) = actorsLoader.loadAll().filter { ids.contains(it.id) }
 
-    suspend fun genres(ids: List<Int>) = genresLoader.loadAll().filter { ids.contains(it.id) }
-
     override fun close() {
-        inputGenres.close()
-        inputMovies.close()
-        inputActors.close()
+        inputGenres.reset()
+        inputMovies.reset()
+        inputActors.reset()
     }
 
     // ---
     // PRIVATE
     // ---
 
-    private inline fun <reified T: Any> InputStream.loadDto(serializer: KSerializer<T> = serializer()): List<T> = this.bufferedReader().readText()
-        .let { jsonParser.decodeFromString(JsonArray.serializer(), it) }
-        .map { jsonParser.decodeFromJsonElement(serializer, it) }
-
-    private fun <T> T?.orThrow(throwSupplier: () -> Throwable): T = this ?: throw throwSupplier.invoke()
+    private inline fun <reified T: Any> InputStream.loadDto(serializer: KSerializer<T> = serializer()): List<T> =
+        this.bufferedReader()
+            .readText()
+            .let { jsonParser.decodeFromString(JsonArray.serializer(), it) }
+            .map { jsonParser.decodeFromJsonElement(serializer, it) }
 }
