@@ -12,7 +12,7 @@ abstract class DiffUtilAdapter<T: DiffUtilModel, VH: RecyclerView.ViewHolder>(
     protected val listener: (T) -> Unit
 ): RecyclerView.Adapter<VH>() {
 
-    suspend fun resetData(content: List<T>) = withContext(Dispatchers.Main) {
+    fun resetData(content: List<T>) {
         val callback = DiffUtilCallback(this@DiffUtilAdapter.content, content)
         this@DiffUtilAdapter.content = content
 

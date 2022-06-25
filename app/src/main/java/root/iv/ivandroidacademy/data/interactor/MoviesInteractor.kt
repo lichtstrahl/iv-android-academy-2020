@@ -8,5 +8,5 @@ class MoviesInteractor(
     private val dataRepository: DataRepository
 ): Closeable by dataRepository {
 
-    suspend fun movies(): List<Movie> = dataRepository.movies()
+    suspend fun movies(): List<Movie> = dataRepository.use { it.movies() }
 }

@@ -1,6 +1,5 @@
 package root.iv.ivandroidacademy.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,23 +7,24 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import root.iv.ivandroidacademy.R
+import root.iv.ivandroidacademy.data.model.Actor
 import root.iv.ivandroidacademy.data.model.Movie
-import root.iv.ivandroidacademy.data.repository.DataRepository
 import root.iv.ivandroidacademy.databinding.FragmentMovieDetailsBinding
 import root.iv.ivandroidacademy.ui.component.ActorAdapter
 import root.iv.ivandroidacademy.ui.component.RankGroup
+import root.iv.ivandroidacademy.viewmodel.MovieDetailsViewModel
+import root.iv.ivandroidacademy.viewmodel.ViewModelFactory
 import kotlin.math.roundToInt
 
 class MovieDetailsFragment: Fragment() {
 
+    // Views
     private lateinit var actorsListView: RecyclerView
     private lateinit var backArrow: ImageView
     private lateinit var backgroundLogo: ImageView
@@ -34,10 +34,14 @@ class MovieDetailsFragment: Fragment() {
     private lateinit var reviewCount: TextView
     private lateinit var story: TextView
     private lateinit var ageLimit: TextView
+    // Adapters
     private lateinit var actorAdapter: ActorAdapter
+
+    // ViewModels
+    private lateinit var movieDetailsViewModel: MovieDetailsViewModel
+
+    // Args
     private var movieId: Int = -1
-    private lateinit var dataRepository: DataRepository
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     companion object {
         private const val ARG_MOVIE_ID = "arg:movie-id"
@@ -66,25 +70,17 @@ class MovieDetailsFragment: Fragment() {
         return view
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        dataRepository = DataRepository(this.requireContext())
-    }
-
     override fun onStart() {
         super.onStart()
-
-        coroutineScope.launch {
-            dataRepository.movie(movieId)?.let {
-                actorAdapter.resetData(dataRepository.actors(it.actorIds))
-                drawMovie(it)
-            }
-        }
+        movieDetailsViewModel = ViewModelProvider(this, ViewModelFactory)[MovieDetailsViewModel::class.java]
+        movieDetailsViewModel.loadDetails(movieId)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        dataRepository.close()
+    override fun onResume() {
+        super.onResume()
+
+        movieDetailsViewModel.movie.observe(this.viewLifecycleOwner, this::drawMovie)
+        movieDetailsViewModel.actors.observe(this.viewLifecycleOwner, this::drawActors)
     }
 
     // ---
@@ -102,7 +98,7 @@ class MovieDetailsFragment: Fragment() {
         .apply { this@MovieDetailsFragment.reviewCount = this.reviewCountView }
         .apply { this@MovieDetailsFragment.story = this.viewStoryline }
 
-    private suspend fun drawMovie(movie: Movie) = withContext(Dispatchers.Main) {
+    private fun drawMovie(movie: Movie) {
         Glide.with(this@MovieDetailsFragment.requireContext())
             .load(movie.poster2)
             .into(backgroundLogo)
@@ -113,6 +109,10 @@ class MovieDetailsFragment: Fragment() {
         rankGroup.draw(movie.rating.roundToInt())
         reviewCount.text = "${movie.reviewsCount} REVIEWS"
         story.text = movie.storyline
+    }
+
+    private fun drawActors(actors: List<Actor>) {
+        actorAdapter.resetData(actors)
     }
 
     private fun back(view: View) = this.requireActivity().onBackPressed()

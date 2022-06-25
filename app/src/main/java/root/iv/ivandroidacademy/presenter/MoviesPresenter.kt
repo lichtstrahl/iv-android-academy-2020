@@ -26,7 +26,7 @@ class MoviesPresenter(
      * 1. Отображать список фильмов
      */
     interface View {
-        suspend fun viewMoviesList(movies: List<Movie>)
+        fun viewMoviesList(movies: List<Movie>)
     }
 
     override fun attach(view: View) {
@@ -39,6 +39,5 @@ class MoviesPresenter(
 
     override fun cancel() {
         this.scope.cancel()
-        moviesInteractor.close()
     }
 }

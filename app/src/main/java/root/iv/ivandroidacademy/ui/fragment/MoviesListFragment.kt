@@ -58,7 +58,7 @@ class MoviesListFragment: Fragment(), MoviesPresenter.View {
         presenter.cancel()
     }
 
-    override suspend fun viewMoviesList(movies: List<Movie>) {
+    override fun viewMoviesList(movies: List<Movie>) {
         moviesAdapter.resetData(movies)
     }
 
