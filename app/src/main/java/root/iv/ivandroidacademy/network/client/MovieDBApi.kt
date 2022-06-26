@@ -8,10 +8,10 @@ import root.iv.ivandroidacademy.data.model.dto.*
 interface MovieDBApi {
 
     @GET("movie/popular")
-    suspend fun movies(): PageContainer<MovieDTO>
+    suspend fun moviesPopular(@Query("page") page: Int): PageContainer<MovieDTO>
 
     @GET("search/movie")
-    suspend fun movies(@Query("query") query: String): PageContainer<MovieDTO>
+    suspend fun movies(@Query("page") page: Int, @Query("query") query: String): PageContainer<MovieDTO>
 
     @GET("movie/{id}")
     suspend fun movie(@Path("id") movieId: Int): MovieDTO

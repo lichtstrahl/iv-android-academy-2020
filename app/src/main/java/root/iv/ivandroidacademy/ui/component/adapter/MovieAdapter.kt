@@ -1,16 +1,13 @@
 package root.iv.ivandroidacademy.ui.component.adapter
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.imageLoader
-import coil.load
-import coil.request.ImageRequest
-import coil.target.Target
 import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FilmCardBinding
@@ -19,9 +16,16 @@ import root.iv.ivandroidacademy.ui.loadBackground
 import kotlin.math.roundToInt
 
 class MovieAdapter(
-    movies: List<Movie> = listOf(),
-    listener: (Movie) -> Unit
-): DiffUtilAdapter<Movie, MovieAdapter.MovieViewHolder>(movies, listener) {
+    private val listener: (Movie) -> Unit
+): PagingDataAdapter<Movie, MovieAdapter.MovieViewHolder>(DIFF_UTIL_CALLBACK) {
+
+    companion object {
+        private val DIFF_UTIL_CALLBACK = object : DiffUtil.ItemCallback<Movie>() {
+            override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean = oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean = oldItem == newItem
+        }
+    }
 
     class MovieViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -63,10 +67,9 @@ class MovieAdapter(
         .inflate(R.layout.film_card, parent, false)
         .let { MovieViewHolder(it) }
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) = holder
-        .bind(content[position])
-        .apply { holder.itemView.setOnClickListener { listener.invoke(content[position]) } }
-
-
-    override fun getItemCount(): Int = content.size
+    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+        getItem(position)
+            ?.also { holder.bind(it) }
+            ?.also { movie -> holder.itemView.setOnClickListener { listener.invoke(movie) } }
+    }
 }

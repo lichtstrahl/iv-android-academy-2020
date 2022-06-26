@@ -1,5 +1,7 @@
 package root.iv.ivandroidacademy.data.interactor
 
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import root.iv.ivandroidacademy.data.cache.ConfigurationCache
@@ -22,13 +24,33 @@ class MovieInteractor(
         }
     }
 
-    suspend fun movies(search: String?): List<Movie> = withContext(Dispatchers.IO) {
-        val dtos: List<MovieDTO> = if (search.isNullOrBlank())
-            movieDBApi.movies().data
-        else
-            movieDBApi.movies(search).data
+    /**
+     * 1. Какую страницу нужно загрузить? Если значения нет - 1
+     * 2. Загружаем указанную страницу
+     * 3. Определяем предыдущую страницу
+     * 4. Определяем следующую страницу
+     * 5. Упаковываем всё это в нужную структуру
+     */
+    fun dataSource(query: String?) = object : PagingSource<Int, Movie>() {
+        override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+            return state.anchorPosition?.let { anchorPosition ->
+                val anchorPage = state.closestPageToPosition(anchorPosition)
+                anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+            }
+        }
 
-        dtos.map { mapper.movie(it, it.genres(), configurationCache.get()) }
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
+            val page = params.key ?: 1
+            val response = if (query.isNullOrBlank()) {
+                movieDBApi.moviesPopular(page)
+            } else {
+                movieDBApi.movies(page, query)
+            }
+            val prevPage: Int? = if (page > 1) page - 1 else null
+            val nextPage: Int? = if (response.pages > page) page + 1 else null
+
+            return LoadResult.Page(response.data.map { mapper.movie(it, it.genres(), configurationCache.get()) }, prevPage, nextPage)
+        }
     }
 
     // ---

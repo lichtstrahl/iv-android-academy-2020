@@ -40,7 +40,7 @@ def lifecycleVersion = '2.4.1'
 def retrofitVersion = '2.9.0'
 def retrofitJsonConverterVersion = '0.8.0'
 def coilVersion = '2.1.0'
-def pagingVersion = '2.1.2'
+def pagingVersion = '3.1.1'
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])

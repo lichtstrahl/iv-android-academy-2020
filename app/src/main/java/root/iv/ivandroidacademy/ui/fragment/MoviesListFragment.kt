@@ -12,9 +12,12 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.launch
 import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FragmentMoviesListBinding
@@ -45,7 +48,7 @@ class MoviesListFragment: Fragment() {
         val view = inflater.inflate(R.layout.fragment_movies_list, container, false)
             .apply { binding(this) }
 
-        moviesAdapter = MovieAdapter(listener = this::onMovieClick)
+        moviesAdapter = MovieAdapter(this::onMovieClick)
         moviesListView.adapter = moviesAdapter
         moviesListView.layoutManager = GridLayoutManager(this.requireContext(), 2, GridLayoutManager.VERTICAL, false)
 
@@ -82,10 +85,12 @@ class MoviesListFragment: Fragment() {
     // View Interface
     // ---
 
-    fun viewMoviesList(movies: List<Movie>) {
-        moviesAdapter.resetData(movies)
-        searchLineView.endIconDrawable = AppCompatResources.getDrawable(this.requireContext(), R.drawable.ic_search)
-        searchLineView.setEndIconOnClickListener { loadMovies() }
+    fun viewMoviesList(movies: PagingData<Movie>) {
+        this.viewLifecycleOwner.lifecycleScope.launch {
+            moviesAdapter.submitData(movies)
+            searchLineView.endIconDrawable = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_search)
+            searchLineView.setEndIconOnClickListener { loadMovies() }
+        }
     }
 
     // ---
