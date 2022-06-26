@@ -11,10 +11,17 @@ import root.iv.ivandroidacademy.data.mapper.Mapper
 
 object ViewModelFactory: ViewModelProvider.Factory {
 
+    // Interactors
+    private val movieInteractor = MovieInteractor(GenresCache(App.movieDBApi, Mapper), ConfigurationCache(App.movieDBApi), Mapper, App.movieDBApi)
+    private val actorInteractor = ActorsInteractor(App.movieDBApi, ConfigurationCache(App.movieDBApi), Mapper)
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T = when (modelClass) {
         MovieDetailsViewModel::class.java -> MovieDetailsViewModel(
-            MovieInteractor(GenresCache(App.movieDBApi, Mapper), ConfigurationCache(App.movieDBApi), Mapper, App.movieDBApi),
-            ActorsInteractor(App.movieDBApi, ConfigurationCache(App.movieDBApi), Mapper)
+            movieInteractor, actorInteractor
+        )
+
+        MoviesListViewModel::class.java -> MoviesListViewModel(
+            movieInteractor
         )
         else -> throw IllegalStateException("Not support ViewModel for $modelClass")
     } as T

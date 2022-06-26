@@ -11,35 +11,31 @@ import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import root.iv.ivandroidacademy.R
-import root.iv.ivandroidacademy.app.App
-import root.iv.ivandroidacademy.data.cache.ConfigurationCache
-import root.iv.ivandroidacademy.data.cache.GenresCache
-import root.iv.ivandroidacademy.data.interactor.MovieInteractor
-import root.iv.ivandroidacademy.data.mapper.Mapper
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FragmentMoviesListBinding
-import root.iv.ivandroidacademy.presenter.MoviesPresenter
 import root.iv.ivandroidacademy.ui.component.adapter.MovieAdapter
+import root.iv.ivandroidacademy.viewmodel.MoviesListViewModel
+import root.iv.ivandroidacademy.viewmodel.ViewModelFactory
 
-class MoviesListFragment: Fragment(), MoviesPresenter.View {
+class MoviesListFragment: Fragment() {
 
     // Views
     private lateinit var moviesListView: RecyclerView
     private lateinit var searchLineView: TextInputLayout
 
     private lateinit var moviesAdapter: MovieAdapter
-    private val presenter: MoviesPresenter = MoviesPresenter(
-        MovieInteractor(
-            GenresCache(App.movieDBApi, Mapper),
-            ConfigurationCache(App.movieDBApi),
-            Mapper,
-            App.movieDBApi
-        )
-    )
+
+    // ViewModels
+    private lateinit var moviesViewModel: MoviesListViewModel
+
+    companion object {
+        private const val RECREATE_INPUT_SEARCH_LINE = "recreate:input-search-line"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,40 +52,40 @@ class MoviesListFragment: Fragment(), MoviesPresenter.View {
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        presenter.attach(this)
-    }
-
     override fun onStart() {
         super.onStart()
-        presenter.loadMovies()
+        moviesViewModel = ViewModelProvider(this, ViewModelFactory)[MoviesListViewModel::class.java]
+        moviesViewModel.loadMovies(searchLineView.editText?.text?.toString())
+        loadMovies()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter.detach()
+    override fun onResume() {
+        super.onResume()
+        moviesViewModel.movies.observe(this.viewLifecycleOwner, this::viewMoviesList)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.cancel()
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(RECREATE_INPUT_SEARCH_LINE, searchLineView.editText?.text?.toString())
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+
+        savedInstanceState?.let { bundle ->
+            val searchLine = bundle.getString(RECREATE_INPUT_SEARCH_LINE) ?: ""
+            searchLineView.editText?.setText(searchLine)
+        }
     }
 
     // ---
     // View Interface
     // ---
 
-    override fun viewMoviesList(movies: List<Movie>) {
+    fun viewMoviesList(movies: List<Movie>) {
         moviesAdapter.resetData(movies)
         searchLineView.endIconDrawable = AppCompatResources.getDrawable(this.requireContext(), R.drawable.ic_search)
-        searchLineView.setEndIconOnClickListener(this::onSearchIconClick)
-    }
-
-    override fun viewLoadingMovies() {
-        searchLineView.endIconDrawable = this.requireContext().getProgressBarDrawable()
-        (searchLineView.endIconDrawable as Animatable).start()
-        searchLineView.setEndIconOnClickListener(null)
+        searchLineView.setEndIconOnClickListener { loadMovies() }
     }
 
     // ---
@@ -108,8 +104,15 @@ class MoviesListFragment: Fragment(), MoviesPresenter.View {
             .commit()
     }
 
-    private fun onSearchIconClick(view: View) {
-        presenter.loadMovies(searchLineView.editText?.text?.toString())
+    private fun loadMovies() {
+        moviesViewModel.loadMovies(searchLineView.editText?.text?.toString())
+        viewLoadingMovies()
+    }
+
+    private fun viewLoadingMovies() {
+        searchLineView.endIconDrawable = this.requireContext().getProgressBarDrawable()
+        (searchLineView.endIconDrawable as Animatable).start()
+        searchLineView.setEndIconOnClickListener(null)
     }
 
     private fun Context.getProgressBarDrawable(): Drawable {

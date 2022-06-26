@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import root.iv.ivandroidacademy.data.interactor.ActorsInteractor
 import root.iv.ivandroidacademy.data.interactor.MovieInteractor
@@ -31,5 +32,9 @@ class MovieDetailsViewModel(
                 ?.let { actorsInteractor.actors(movieId) }
                 ?.also { internalActors.postValue(it) }
         }
+    }
+
+    override fun onCleared() {
+        scope.cancel()
     }
 }
