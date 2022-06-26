@@ -9,13 +9,13 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.create
 import root.iv.ivandroidacademy.BuildConfig
-import root.iv.ivandroidacademy.data.repository.DataRepository
+import root.iv.ivandroidacademy.network.client.MovieDBApi
 import root.iv.ivandroidacademy.network.interceptor.ApiKeyInterceptor
 
 class App: Application() {
 
     companion object {
-        lateinit var dataRepository: DataRepository
+        lateinit var movieDBApi: MovieDBApi
     }
 
     private val json = Json { ignoreUnknownKeys = true }
@@ -34,6 +34,6 @@ class App: Application() {
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
 
-        dataRepository = DataRepository(retrofit.create())
+        movieDBApi = retrofit.create()
     }
 }

@@ -2,12 +2,16 @@ package root.iv.ivandroidacademy.network.client
 
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 import root.iv.ivandroidacademy.data.model.dto.*
 
 interface MovieDBApi {
 
     @GET("movie/popular")
     suspend fun movies(): PageContainer<MovieDTO>
+
+    @GET("search/movie")
+    suspend fun movies(@Query("query") query: String): PageContainer<MovieDTO>
 
     @GET("movie/{id}")
     suspend fun movie(@Path("id") movieId: Int): MovieDTO

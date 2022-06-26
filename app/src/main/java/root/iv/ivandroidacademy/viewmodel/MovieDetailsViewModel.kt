@@ -10,14 +10,11 @@ import root.iv.ivandroidacademy.data.interactor.ActorsInteractor
 import root.iv.ivandroidacademy.data.interactor.MovieInteractor
 import root.iv.ivandroidacademy.data.model.Actor
 import root.iv.ivandroidacademy.data.model.Movie
-import root.iv.ivandroidacademy.data.repository.DataRepository
 
 class MovieDetailsViewModel(
     private val movieInteractor: MovieInteractor,
     private val actorsInteractor: ActorsInteractor
 ): ViewModel() {
-
-    constructor(dataRepository: DataRepository): this(MovieInteractor(dataRepository), ActorsInteractor(dataRepository))
 
     private val internalMovie = MutableLiveData<Movie>()
     val movie: LiveData<Movie> = internalMovie

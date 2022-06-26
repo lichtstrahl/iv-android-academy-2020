@@ -6,7 +6,7 @@ import root.iv.ivandroidacademy.data.model.dto.GenreDTO
 import root.iv.ivandroidacademy.data.model.dto.ImageConfigurationDTO
 import root.iv.ivandroidacademy.data.model.dto.MovieDTO
 
-class Mapper {
+object Mapper {
 
     fun actor(dto: ActorDTO, config: ImageConfigurationDTO.Config) = Actor(
         dto.id,
@@ -22,8 +22,8 @@ class Mapper {
         if (dto.adult) 16 else 13,
         dto.rating/2,
         dto.votesCount,
-        dto.posterPath.toImageUrl(config.baseUrl, config.posterSizes.middle()),
-        dto.posterBackdropPath.toImageUrl(config.baseUrl, config.backdropSizes.extra()),
+        dto.posterPath?.toImageUrl(config.baseUrl, config.posterSizes.middle()),
+        dto.posterBackdropPath?.toImageUrl(config.baseUrl, config.backdropSizes.extra()),
         false,
         dto.overview
     )

@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".app.App">
+        android:name=".app.App"
+        android:usesCleartextTraffic="true">
         <activity android:name="root.iv.ivandroidacademy.ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

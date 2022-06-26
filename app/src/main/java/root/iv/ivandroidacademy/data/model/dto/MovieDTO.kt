@@ -10,9 +10,9 @@ data class MovieDTO(
     @SerialName("title")
     val title: String,
     @SerialName("poster_path")
-    val posterPath: String,
+    val posterPath: String?,
     @SerialName("backdrop_path")
-    val posterBackdropPath: String,
+    val posterBackdropPath: String?,
     @SerialName("runtime")
     val duration: Int? = null,
     @SerialName("genre_ids")
