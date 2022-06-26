@@ -47,14 +47,14 @@
             android:layout_height="10dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/ic_back_arrow"
-            app:layout_constraintBottom_toBottomOf="@id/labelBack"
-            app:layout_constraintEnd_toStartOf="@id/labelBack"
-            app:layout_constraintTop_toTopOf="@id/labelBack"
+            app:layout_constraintBottom_toBottomOf="@id/backLabelView"
+            app:layout_constraintEnd_toStartOf="@id/backLabelView"
+            app:layout_constraintTop_toTopOf="@id/backLabelView"
 
             />
 
         <TextView
-            android:id="@+id/labelBack"
+            android:id="@+id/backLabelView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/topMenuTopGuideline"

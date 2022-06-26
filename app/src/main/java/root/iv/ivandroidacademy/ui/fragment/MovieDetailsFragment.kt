@@ -28,6 +28,7 @@ class MovieDetailsFragment: Fragment() {
     // Views
     private lateinit var actorsListView: RecyclerView
     private lateinit var backArrow: ImageView
+    private lateinit var backLabel: TextView
     private lateinit var backgroundLogo: ImageView
     private lateinit var title: TextView
     private lateinit var tags: TextView
@@ -62,6 +63,7 @@ class MovieDetailsFragment: Fragment() {
             .apply { binding(this) }
 
         backArrow.setOnClickListener(this::back)
+        backLabel.setOnClickListener(this::back)
 
         movieId = requireArguments().getInt(ARG_MOVIE_ID)
 
@@ -93,6 +95,7 @@ class MovieDetailsFragment: Fragment() {
     private fun binding(view: View) = FragmentMovieDetailsBinding.bind(view)
         .apply { this@MovieDetailsFragment.actorsListView = this.actorsListView }
         .apply { this@MovieDetailsFragment.backArrow = this.topMenuBackArrow }
+        .apply { this@MovieDetailsFragment.backLabel = this.backLabelView }
         .apply { this@MovieDetailsFragment.backgroundLogo = this.backgroundLogo }
         .apply { this@MovieDetailsFragment.ageLimit = this.ageLimitView }
         .apply { this@MovieDetailsFragment.title = this.movieNameView }
