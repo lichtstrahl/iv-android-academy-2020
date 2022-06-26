@@ -1,22 +1,20 @@
 package root.iv.ivandroidacademy.data.mapper
 
-import root.iv.ivandroidacademy.BuildConfig
-import root.iv.ivandroidacademy.data.model.Actor
-import root.iv.ivandroidacademy.data.model.Genre
-import root.iv.ivandroidacademy.data.model.Movie
+import root.iv.ivandroidacademy.data.model.*
 import root.iv.ivandroidacademy.data.model.dto.ActorDTO
 import root.iv.ivandroidacademy.data.model.dto.GenreDTO
+import root.iv.ivandroidacademy.data.model.dto.ImageConfigurationDTO
 import root.iv.ivandroidacademy.data.model.dto.MovieDTO
 
 class Mapper {
 
-    fun actor(dto: ActorDTO) = Actor(
+    fun actor(dto: ActorDTO, config: ImageConfigurationDTO.Config) = Actor(
         dto.id,
         dto.name,
-        dto.photoUrl
+        dto.photoUrl?.toImageUrl(config.baseUrl, config.profileSizes.middle())
     )
 
-    fun movie(dto: MovieDTO, genres: List<Genre>) = Movie(
+    fun movie(dto: MovieDTO, genres: List<Genre>, config: ImageConfigurationDTO.Config) = Movie(
         dto.id,
         dto.title,
         genres.joinToString(separator = ", ") { it.name },
@@ -24,8 +22,8 @@ class Mapper {
         if (dto.adult) 16 else 13,
         dto.rating/2,
         dto.votesCount,
-        BuildConfig.MOVIE_BASE_URL+dto.posterPath,
-        BuildConfig.MOVIE_BASE_URL+dto.posterBackdropPath,
+        dto.posterPath.toImageUrl(config.baseUrl, config.posterSizes.middle()),
+        dto.posterBackdropPath.toImageUrl(config.baseUrl, config.backdropSizes.extra()),
         false,
         dto.overview
     )

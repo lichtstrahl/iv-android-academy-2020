@@ -20,4 +20,7 @@ interface MovieDBApi {
 
     @GET("genre/movie/list")
     suspend fun genres(): GenresContainer
+
+    @GET("configuration")
+    suspend fun configuration(): ImageConfigurationDTO
 }
