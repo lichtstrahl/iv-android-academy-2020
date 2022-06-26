@@ -13,7 +13,7 @@ import root.iv.ivandroidacademy.data.interactor.MoviesInteractor
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FragmentMoviesListBinding
 import root.iv.ivandroidacademy.presenter.MoviesPresenter
-import root.iv.ivandroidacademy.ui.component.MovieAdapter
+import root.iv.ivandroidacademy.ui.component.adapter.MovieAdapter
 
 class MoviesListFragment: Fragment(), MoviesPresenter.View {
 

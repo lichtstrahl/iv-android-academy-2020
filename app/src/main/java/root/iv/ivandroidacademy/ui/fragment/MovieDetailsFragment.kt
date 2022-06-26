@@ -10,13 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
 import kotlinx.coroutines.*
 import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Actor
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FragmentMovieDetailsBinding
-import root.iv.ivandroidacademy.ui.component.ActorAdapter
+import root.iv.ivandroidacademy.ui.component.adapter.ActorAdapter
 import root.iv.ivandroidacademy.ui.component.RankGroup
 import root.iv.ivandroidacademy.viewmodel.MovieDetailsViewModel
 import root.iv.ivandroidacademy.viewmodel.ViewModelFactory
@@ -99,9 +99,7 @@ class MovieDetailsFragment: Fragment() {
         .apply { this@MovieDetailsFragment.story = this.viewStoryline }
 
     private fun drawMovie(movie: Movie) {
-        Glide.with(this@MovieDetailsFragment.requireContext())
-            .load(movie.poster2)
-            .into(backgroundLogo)
+        backgroundLogo.load(movie.poster2)
 
         ageLimit.text = "${movie.ageLimit}+"
         title.text = movie.title

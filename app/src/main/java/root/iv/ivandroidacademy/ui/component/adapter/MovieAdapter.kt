@@ -1,4 +1,4 @@
-package root.iv.ivandroidacademy.ui.component
+package root.iv.ivandroidacademy.ui.component.adapter
 
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -7,13 +7,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import coil.imageLoader
+import coil.load
+import coil.request.ImageRequest
+import coil.target.Target
 import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FilmCardBinding
-import root.iv.ivandroidacademy.ui.component.adapter.DiffUtilAdapter
+import root.iv.ivandroidacademy.ui.component.RankGroup
+import root.iv.ivandroidacademy.ui.loadBackground
 import kotlin.math.roundToInt
 
 class MovieAdapter(
@@ -48,22 +50,7 @@ class MovieAdapter(
             ageLimit.text = "${movie.ageLimit}+"
             tag.text = movie.tags
 
-            val backgroundLogoTarget = object : CustomTarget<Drawable>() {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable>?
-                ) {
-                    logo.background = resource
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    logo.background = null
-                }
-
-            }
-            Glide.with(this.itemView.context)
-                .load(movie.poster)
-                .into(backgroundLogoTarget)
+            this.logo.loadBackground(movie.poster)
             rankGroup.draw(movie.rating.roundToInt())
             reviewCount.text = "${movie.reviewsCount} REVIEWS"
             title.text = movie.title

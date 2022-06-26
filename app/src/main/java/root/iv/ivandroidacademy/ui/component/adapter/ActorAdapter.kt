@@ -1,4 +1,4 @@
-package root.iv.ivandroidacademy.ui.component
+package root.iv.ivandroidacademy.ui.component.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,11 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
 import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Actor
 import root.iv.ivandroidacademy.databinding.ActorCardBinding
-import root.iv.ivandroidacademy.ui.component.adapter.DiffUtilAdapter
 
 class ActorAdapter(
     actors: List<Actor> = listOf()
@@ -28,9 +27,9 @@ class ActorAdapter(
 
         fun bind(actor: Actor) {
             name.text = actor.name
-            Glide.with(itemView.context)
-                .load(actor.photoUrl)
-                .into(avatar)
+
+            avatar.load(actor.photoUrl) {
+            }
         }
     }
 
