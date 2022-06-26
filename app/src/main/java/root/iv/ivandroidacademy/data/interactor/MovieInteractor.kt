@@ -10,6 +10,7 @@ import root.iv.ivandroidacademy.data.mapper.Mapper
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.data.model.dto.MovieDTO
 import root.iv.ivandroidacademy.network.client.MovieDBApi
+import timber.log.Timber
 
 class MovieInteractor(
     private val genresCache: GenresCache,
@@ -40,6 +41,7 @@ class MovieInteractor(
         }
 
         override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
+            Timber.d("Load page ${params.key}")
             val page = params.key ?: 1
             val response = if (query.isNullOrBlank()) {
                 movieDBApi.moviesPopular(page)

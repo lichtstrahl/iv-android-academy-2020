@@ -41,6 +41,7 @@ def retrofitVersion = '2.9.0'
 def retrofitJsonConverterVersion = '0.8.0'
 def coilVersion = '2.1.0'
 def pagingVersion = '3.1.1'
+def timberVersion = '5.0.1'
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -72,4 +73,7 @@ dependencies {
 
     // Paging
     implementation("androidx.paging:paging-runtime:$pagingVersion")
+
+    // Timber Version
+    implementation("com.jakewharton.timber:timber:$timberVersion")
 }

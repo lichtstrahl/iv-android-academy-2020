@@ -11,6 +11,7 @@ import retrofit2.create
 import root.iv.ivandroidacademy.BuildConfig
 import root.iv.ivandroidacademy.network.client.MovieDBApi
 import root.iv.ivandroidacademy.network.interceptor.ApiKeyInterceptor
+import timber.log.Timber
 
 class App: Application() {
 
@@ -23,6 +24,15 @@ class App: Application() {
     override fun onCreate() {
         super.onCreate()
 
+        initRetrofit()
+        initLogging()
+    }
+
+    // ---
+    // PRIVATE
+    // ---
+
+    private fun initRetrofit() {
         val client = OkHttpClient.Builder()
             .addInterceptor(ApiKeyInterceptor())
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
@@ -35,5 +45,9 @@ class App: Application() {
             .build()
 
         movieDBApi = retrofit.create()
+    }
+
+    private fun initLogging() {
+        Timber.plant(Timber.DebugTree())
     }
 }

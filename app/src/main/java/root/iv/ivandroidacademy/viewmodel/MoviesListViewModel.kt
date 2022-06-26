@@ -24,7 +24,7 @@ class MoviesListViewModel(
 
     fun loadMovies(search: String? = null) {
         scope.launch {
-            Pager(PagingConfig(pageSize = 20)) {
+            Pager(PagingConfig(10)) {
                 movieInteractor.dataSource(search)
             }.flow.cachedIn(viewModelScope).collectLatest { movies ->
                 internalMovies.postValue(movies)
