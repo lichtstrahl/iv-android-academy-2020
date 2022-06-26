@@ -23,9 +23,10 @@ class MovieInteractor(
     }
 
     suspend fun movies(search: String?): List<Movie> = withContext(Dispatchers.IO) {
-        val dtos: List<MovieDTO> = search
-            ?.let { movieDBApi.movies(it).data }
-            ?: movieDBApi.movies().data
+        val dtos: List<MovieDTO> = if (search.isNullOrBlank())
+            movieDBApi.movies().data
+        else
+            movieDBApi.movies(search).data
 
         dtos.map { mapper.movie(it, it.genres(), configurationCache.get()) }
     }
