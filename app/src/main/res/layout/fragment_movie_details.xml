@@ -16,7 +16,7 @@
             android:id="@+id/backgroundLogo"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:src="@drawable/details_header_background"
+            tools:src="@drawable/details_header_background"
             android:scaleType="fitXY"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -81,7 +81,7 @@
             app:layout_constraintStart_toStartOf="@id/movieNameView"
             app:layout_constraintBottom_toTopOf="@id/movieNameView"
 
-            android:text="@string/movie_default_age_bound"
+            tools:text="@string/movie_default_age_bound"
             android:textSize="12sp"
             android:textColor="@android:color/white"
             />
@@ -96,7 +96,7 @@
             app:layout_constraintBottom_toTopOf="@id/movieTagsView"
             android:layout_marginHorizontal="@dimen/margin_horizontal_std"
 
-            android:text="@string/default_movie_name"
+            tools:text="@string/default_movie_name"
             android:textColor="@android:color/white"
             android:textSize="40sp"
             android:textStyle="bold"
@@ -114,7 +114,7 @@
             android:layout_marginHorizontal="@dimen/margin_horizontal_std"
             android:layout_marginTop="4dp"
 
-            android:text="@string/default_movie_genre"
+            tools:text="@string/default_movie_genre"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/text_size_std"
             android:maxLines="1"
@@ -156,7 +156,7 @@
                 android:layout_marginStart="10dp"
 
                 android:textSize="14sp"
-                android:text="@string/default_movie_review_count"
+                tools:text="@string/default_movie_review_count"
                 android:textColor="@color/colorDisableStar"
                 android:textStyle="bold"/>
         </LinearLayout>
@@ -187,7 +187,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
 
-            android:text="@string/default_movie_storyline"
+            tools:text="@string/default_movie_storyline"
             android:textColor="@android:color/white"
             android:textSize="14sp"
             android:maxLines="5"
@@ -213,7 +213,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/actors_list_view"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             app:layout_constraintStart_toStartOf="@id/castHeader"
             app:layout_constraintEnd_toEndOf="@id/castHeader"
             app:layout_constraintTop_toBottomOf="@id/castHeader"
