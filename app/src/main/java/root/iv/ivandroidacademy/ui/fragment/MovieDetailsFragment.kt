@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -34,6 +35,7 @@ class MovieDetailsFragment: Fragment() {
     private lateinit var reviewCount: TextView
     private lateinit var story: TextView
     private lateinit var ageLimit: TextView
+    private lateinit var actorsLoader: ProgressBar
     // Adapters
     private lateinit var actorAdapter: ActorAdapter
 
@@ -74,6 +76,7 @@ class MovieDetailsFragment: Fragment() {
         super.onStart()
         movieDetailsViewModel = ViewModelProvider(this, ViewModelFactory)[MovieDetailsViewModel::class.java]
         movieDetailsViewModel.loadDetails(movieId)
+        loadActors()
     }
 
     override fun onResume() {
@@ -97,6 +100,7 @@ class MovieDetailsFragment: Fragment() {
         .apply { this@MovieDetailsFragment.rankGroup = RankGroup(this@MovieDetailsFragment.requireContext(), this.star1, this.star2, this.star3, this.star4, this.star5) }
         .apply { this@MovieDetailsFragment.reviewCount = this.reviewCountView }
         .apply { this@MovieDetailsFragment.story = this.viewStoryline }
+        .apply { this@MovieDetailsFragment.actorsLoader = this.actorsLoader }
 
     private fun drawMovie(movie: Movie) {
         backgroundLogo.load(movie.poster2)
@@ -111,6 +115,17 @@ class MovieDetailsFragment: Fragment() {
 
     private fun drawActors(actors: List<Actor>) {
         actorAdapter.resetData(actors)
+        actorsLoaded()
+    }
+
+    private fun loadActors() {
+        this.actorsLoader.visibility = View.VISIBLE
+        this.actorsListView.visibility = View.INVISIBLE
+    }
+
+    private fun actorsLoaded() {
+        this.actorsLoader.visibility = View.GONE
+        this.actorsListView.visibility = View.VISIBLE
     }
 
     private fun back(view: View) = this.requireActivity().onBackPressed()
