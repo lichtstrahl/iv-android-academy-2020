@@ -87,9 +87,9 @@ class MoviesListFragment: Fragment() {
 
     fun viewMoviesList(movies: PagingData<Movie>) {
         this.viewLifecycleOwner.lifecycleScope.launch {
-            moviesAdapter.submitData(movies)
             searchLineView.endIconDrawable = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_search)
             searchLineView.setEndIconOnClickListener { loadMovies() }
+            moviesAdapter.submitData(movies)
         }
     }
 
