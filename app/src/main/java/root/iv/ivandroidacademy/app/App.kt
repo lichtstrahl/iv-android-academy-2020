@@ -1,6 +1,7 @@
 package root.iv.ivandroidacademy.app
 
 import android.app.Application
+import androidx.room.Room
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -9,6 +10,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.create
 import root.iv.ivandroidacademy.BuildConfig
+import root.iv.ivandroidacademy.data.database.FilmDatabase
+import root.iv.ivandroidacademy.data.database.repository.ActorsDao
+import root.iv.ivandroidacademy.data.database.repository.MoviesDao
 import root.iv.ivandroidacademy.network.client.MovieDBApi
 import root.iv.ivandroidacademy.network.interceptor.ApiKeyInterceptor
 import timber.log.Timber
@@ -17,15 +21,21 @@ class App: Application() {
 
     companion object {
         lateinit var movieDBApi: MovieDBApi
+        private lateinit var database: FilmDatabase
+
+        val moviesDao: MoviesDao get() = database.moviesDao()
+        val actorsDao: ActorsDao get() = database.actorsDao()
     }
 
     private val json = Json { ignoreUnknownKeys = true }
+
 
     override fun onCreate() {
         super.onCreate()
 
         initRetrofit()
         initLogging()
+        initDatabase()
     }
 
     // ---
@@ -49,5 +59,11 @@ class App: Application() {
 
     private fun initLogging() {
         Timber.plant(Timber.DebugTree())
+    }
+
+    private fun initDatabase() {
+        database = Room.databaseBuilder(this.applicationContext, FilmDatabase::class.java, "films.db")
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }

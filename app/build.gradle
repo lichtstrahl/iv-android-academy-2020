@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("kotlin-kapt")
 }
 
 android {
@@ -42,6 +43,7 @@ def retrofitJsonConverterVersion = '0.8.0'
 def coilVersion = '2.1.0'
 def pagingVersion = '3.1.1'
 def timberVersion = '5.0.1'
+def roomVersion = '2.4.2'
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -76,4 +78,10 @@ dependencies {
 
     // Timber Version
     implementation("com.jakewharton.timber:timber:$timberVersion")
+
+    // Room
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
+
 }
