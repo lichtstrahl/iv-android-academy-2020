@@ -5,22 +5,27 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import root.iv.ivandroidacademy.app.App
-import root.iv.ivandroidacademy.data.database.entity.MovieEntity
 import root.iv.ivandroidacademy.data.interactor.MovieInteractor
-import root.iv.ivandroidacademy.data.mediator.MoviesMediator
+import root.iv.ivandroidacademy.data.mapper.Mapper
+import root.iv.ivandroidacademy.data.mediator.RemoteMediatorFactory
 import root.iv.ivandroidacademy.data.model.Movie
 import timber.log.Timber
 
 class MoviesListViewModel @ExperimentalPagingApi constructor(
     private val movieInteractor: MovieInteractor,
-    private val moviesMediator: MoviesMediator
+    private val mediatorFactory: RemoteMediatorFactory,
+    private val mapper: Mapper
 ): ViewModel() {
 
-    private val internalMovies = MutableLiveData<PagingData<MovieEntity>>()
-    val movies: LiveData<PagingData<MovieEntity>> = internalMovies
+    private val internalMovies = MutableLiveData<PagingData<Movie>>()
+    val movies: LiveData<PagingData<Movie>> = internalMovies
 
     private val scope = CoroutineScope(Dispatchers.Main)
 
@@ -36,10 +41,14 @@ class MoviesListViewModel @ExperimentalPagingApi constructor(
         Timber.d("Load movies")
         Pager(
             config = PagingConfig(10),
-            remoteMediator = moviesMediator
+            remoteMediator = mediatorFactory.moviesMediator()
         ) {
-            App.moviesDao.popular()
-         }.flow.cachedIn(viewModelScope).collectLatest { movies ->
+            if (search == null)
+                App.moviesDao.popular()
+            else
+                movieInteractor.dataSource(search)
+
+         }.flow.map { data -> data.map { mapper.movie(it) } }.cachedIn(viewModelScope).collectLatest { movies ->
             Timber.d("Post movies")
             internalMovies.postValue(movies)
         }

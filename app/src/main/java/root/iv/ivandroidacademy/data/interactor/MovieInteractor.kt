@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import root.iv.ivandroidacademy.data.cache.ConfigurationCache
 import root.iv.ivandroidacademy.data.cache.GenresCache
+import root.iv.ivandroidacademy.data.database.entity.MovieEntity
 import root.iv.ivandroidacademy.data.mapper.Mapper
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.data.model.dto.MovieDTO
@@ -32,15 +33,15 @@ class MovieInteractor(
      * 4. Определяем следующую страницу
      * 5. Упаковываем всё это в нужную структуру
      */
-    fun dataSource(query: String?) = object : PagingSource<Int, Movie>() {
-        override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+    fun dataSource(query: String?) = object : PagingSource<Int, MovieEntity>() {
+        override fun getRefreshKey(state: PagingState<Int, MovieEntity>): Int? {
             return state.anchorPosition?.let { anchorPosition ->
                 val anchorPage = state.closestPageToPosition(anchorPosition)
                 anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
             }
         }
 
-        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieEntity> {
             Timber.d("Load page ${params.key}")
             val page = params.key ?: 1
             val response = if (query.isNullOrBlank()) {
@@ -51,7 +52,12 @@ class MovieInteractor(
             val prevPage: Int? = if (page > 1) page - 1 else null
             val nextPage: Int? = if (response.pages > page) page + 1 else null
 
-            return LoadResult.Page(response.data.map { mapper.movie(it, it.genres(), configurationCache.get()) }, prevPage, nextPage)
+            // TODO Странноватый маппинг из-за RemoteMediator
+            val dataEntity = response
+                .data
+                .map { mapper.movie(it, it.genres(), configurationCache.get()) }
+                .map { mapper.entity(it) }
+            return LoadResult.Page(dataEntity, prevPage, nextPage)
         }
     }
 

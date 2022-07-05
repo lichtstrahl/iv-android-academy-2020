@@ -74,7 +74,7 @@ dependencies {
     implementation("io.coil-kt:coil:$coilVersion")
 
     // Paging
-    implementation("androidx.paging:paging-runtime:$pagingVersion")
+    implementation("androidx.paging:paging-runtime-ktx:$pagingVersion")
 
     // Timber Version
     implementation("com.jakewharton.timber:timber:$timberVersion")

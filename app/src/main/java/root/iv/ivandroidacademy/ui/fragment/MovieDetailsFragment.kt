@@ -9,6 +9,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -23,6 +24,7 @@ import root.iv.ivandroidacademy.viewmodel.MovieDetailsViewModel
 import root.iv.ivandroidacademy.viewmodel.ViewModelFactory
 import kotlin.math.roundToInt
 
+@ExperimentalPagingApi
 class MovieDetailsFragment: Fragment() {
 
     // Views

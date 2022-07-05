@@ -15,6 +15,7 @@ import root.iv.ivandroidacademy.data.database.dao.ActorsDao
 import root.iv.ivandroidacademy.data.database.dao.MoviesDao
 import root.iv.ivandroidacademy.network.client.MovieDBApi
 import root.iv.ivandroidacademy.network.interceptor.ApiKeyInterceptor
+import root.iv.ivandroidacademy.network.interceptor.ConnectivityInterceptor
 import timber.log.Timber
 
 class App: Application() {
@@ -45,6 +46,7 @@ class App: Application() {
     private fun initRetrofit() {
         val client = OkHttpClient.Builder()
             .addInterceptor(ApiKeyInterceptor())
+            .addInterceptor(ConnectivityInterceptor(this.applicationContext))
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
 
