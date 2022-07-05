@@ -1,4 +1,4 @@
-package root.iv.ivandroidacademy.data.database.repository
+package root.iv.ivandroidacademy.data.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query

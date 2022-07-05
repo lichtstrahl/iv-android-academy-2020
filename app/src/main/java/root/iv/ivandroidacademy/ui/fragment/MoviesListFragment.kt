@@ -13,6 +13,7 @@ import androidx.core.content.res.getDrawableOrThrow
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +26,8 @@ import root.iv.ivandroidacademy.ui.component.adapter.MovieAdapter
 import root.iv.ivandroidacademy.viewmodel.MoviesListViewModel
 import root.iv.ivandroidacademy.viewmodel.ViewModelFactory
 
+
+@ExperimentalPagingApi
 class MoviesListFragment: Fragment() {
 
     // Views

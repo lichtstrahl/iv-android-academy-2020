@@ -11,8 +11,8 @@ import retrofit2.Retrofit
 import retrofit2.create
 import root.iv.ivandroidacademy.BuildConfig
 import root.iv.ivandroidacademy.data.database.FilmDatabase
-import root.iv.ivandroidacademy.data.database.repository.ActorsDao
-import root.iv.ivandroidacademy.data.database.repository.MoviesDao
+import root.iv.ivandroidacademy.data.database.dao.ActorsDao
+import root.iv.ivandroidacademy.data.database.dao.MoviesDao
 import root.iv.ivandroidacademy.network.client.MovieDBApi
 import root.iv.ivandroidacademy.network.interceptor.ApiKeyInterceptor
 import timber.log.Timber
@@ -21,7 +21,7 @@ class App: Application() {
 
     companion object {
         lateinit var movieDBApi: MovieDBApi
-        private lateinit var database: FilmDatabase
+        lateinit var database: FilmDatabase
 
         val moviesDao: MoviesDao get() = database.moviesDao()
         val actorsDao: ActorsDao get() = database.actorsDao()

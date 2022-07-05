@@ -23,9 +23,9 @@ data class MovieEntity(
     @ColumnInfo(name = "reviews_count")
     val reviewsCount: Int,
     @ColumnInfo(name = "poster_url")
-    val posterUrl: String,
+    val posterUrl: String?,
     @ColumnInfo(name = "backdrop_url")
-    val backdropUrl: String,
+    val backdropUrl: String?,
     @ColumnInfo(name = "is_like")
     val isLike: Boolean,
     @ColumnInfo(name = "storyline")
