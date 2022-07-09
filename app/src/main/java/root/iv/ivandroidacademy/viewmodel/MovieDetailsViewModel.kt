@@ -3,6 +3,7 @@ package root.iv.ivandroidacademy.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -23,18 +24,12 @@ class MovieDetailsViewModel(
     private val internalActors = MutableLiveData<List<Actor>>()
     val actors: LiveData<List<Actor>> = internalActors
 
-    private val scope = CoroutineScope(Dispatchers.IO)
 
-    fun loadDetails(movieId: Int) {
-        scope.launch {
-            movieInteractor.movie(movieId)
-                ?.also { internalMovie.postValue(it) }
-                ?.let { actorsInteractor.actors(movieId) }
-                ?.also { internalActors.postValue(it) }
-        }
+    fun loadDetails(movieId: Int) = viewModelScope.launch {
+        movieInteractor.movie(movieId)
+            ?.also { internalMovie.postValue(it) }
+            ?.let { actorsInteractor.actors(movieId) }
+            ?.also { internalActors.postValue(it) }
     }
 
-    override fun onCleared() {
-        scope.cancel()
-    }
 }

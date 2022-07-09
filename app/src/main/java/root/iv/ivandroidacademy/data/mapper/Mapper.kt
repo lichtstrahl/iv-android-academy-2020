@@ -1,5 +1,7 @@
 package root.iv.ivandroidacademy.data.mapper
 
+import root.iv.ivandroidacademy.data.database.entity.GenreEntity
+import root.iv.ivandroidacademy.data.database.entity.ImageConfigEntity
 import root.iv.ivandroidacademy.data.database.entity.MovieEntity
 import root.iv.ivandroidacademy.data.model.*
 import root.iv.ivandroidacademy.data.model.dto.ActorDTO
@@ -57,8 +59,30 @@ object Mapper {
         movie.storyline
     )
 
+    fun entity(imageConfig: ImageConfigurationDTO.Config) = ImageConfigEntity(
+        baseUrl = imageConfig.baseUrl,
+        backdropSizes = imageConfig.backdropSizes,
+        posterSizes = imageConfig.posterSizes,
+        profileSizes = imageConfig.profileSizes
+    )
+
+    fun entity(genre: Genre) = GenreEntity(
+        genre.id.toLong(), genre.name
+    )
+
+    fun genre(entity: GenreEntity) = Genre(
+        entity.id.toInt(), entity.name
+    )
+
     fun genre(dto: GenreDTO) = Genre(
         dto.id,
         dto.name
+    )
+
+    fun imageConfig(entity: ImageConfigEntity) = ImageConfigurationDTO.Config(
+        entity.baseUrl,
+        entity.backdropSizes,
+        entity.posterSizes,
+        entity.profileSizes
     )
 }

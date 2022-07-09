@@ -15,8 +15,8 @@ import root.iv.ivandroidacademy.data.mediator.RemoteMediatorFactory
 object ViewModelFactory: ViewModelProvider.Factory {
 
     // Caches
-    private val genresCache = GenresCache(App.movieDBApi, Mapper)
-    private val configurationCache = ConfigurationCache(App.movieDBApi)
+    private val genresCache = GenresCache(App.movieDBApi, App.genresDao, Mapper)
+    private val configurationCache = ConfigurationCache(App.movieDBApi, App.imageConfigDao, Mapper)
 
     // Interactors
     private val movieInteractor = MovieInteractor(genresCache, configurationCache, Mapper, App.movieDBApi)

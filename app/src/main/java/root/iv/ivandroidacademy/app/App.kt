@@ -12,10 +12,11 @@ import retrofit2.create
 import root.iv.ivandroidacademy.BuildConfig
 import root.iv.ivandroidacademy.data.database.FilmDatabase
 import root.iv.ivandroidacademy.data.database.dao.ActorsDao
+import root.iv.ivandroidacademy.data.database.dao.GenresDao
+import root.iv.ivandroidacademy.data.database.dao.ImageConfigDao
 import root.iv.ivandroidacademy.data.database.dao.MoviesDao
 import root.iv.ivandroidacademy.network.client.MovieDBApi
 import root.iv.ivandroidacademy.network.interceptor.ApiKeyInterceptor
-import root.iv.ivandroidacademy.network.interceptor.ConnectivityInterceptor
 import timber.log.Timber
 
 class App: Application() {
@@ -26,6 +27,8 @@ class App: Application() {
 
         val moviesDao: MoviesDao get() = database.moviesDao()
         val actorsDao: ActorsDao get() = database.actorsDao()
+        val genresDao: GenresDao get() = database.genresDao()
+        val imageConfigDao: ImageConfigDao get() = database.imageConfigDao()
     }
 
     private val json = Json { ignoreUnknownKeys = true }
