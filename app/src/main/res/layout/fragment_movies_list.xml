@@ -30,12 +30,32 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+        android:id="@+id/offlineLabelView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginVertical="@dimen/margin_horizontal_std"
+        android:text="@string/label_offline_mode"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:textColor="@android:color/darker_gray" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/headerBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="offlineLabelView,searchLineView"/>
+
     <ImageView
         android:id="@+id/target"
         android:layout_width="20dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="1"
-        app:layout_constraintTop_toBottomOf="@id/searchLineView"
+        app:layout_constraintTop_toBottomOf="@id/headerBarrier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/listHeader"
         android:layout_marginVertical="@dimen/margin_horizontal_std"

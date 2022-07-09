@@ -12,4 +12,5 @@
     <string name="default_actor_descr">actor</string>
     <string name="default_logo_desc">logo</string>
     <string name="movies_header">Movies list</string>
+    <string name="label_offline_mode">Offline-режим. Поиск недоступен.</string>
 </resources>

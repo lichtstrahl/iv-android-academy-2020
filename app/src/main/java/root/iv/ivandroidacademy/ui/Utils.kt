@@ -1,6 +1,8 @@
 package root.iv.ivandroidacademy.ui
 
+import android.content.Context
 import android.graphics.drawable.Drawable
+import android.net.ConnectivityManager
 import android.widget.ImageView
 import coil.ImageLoader
 import coil.imageLoader
@@ -29,3 +31,7 @@ inline fun ImageView.loadBackground(
         })
     this.apply(builder)
 }
+
+fun Context.isOnline(): Boolean = this.getSystemService(Context.CONNECTIVITY_SERVICE)
+    .let { it as ConnectivityManager }
+    .let { it.activeNetworkInfo?.isConnected ?: false }

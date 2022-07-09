@@ -8,8 +8,10 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.getDrawableOrThrow
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +25,7 @@ import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FragmentMoviesListBinding
 import root.iv.ivandroidacademy.ui.component.adapter.MovieAdapter
+import root.iv.ivandroidacademy.ui.isOnline
 import root.iv.ivandroidacademy.viewmodel.MoviesListViewModel
 import root.iv.ivandroidacademy.viewmodel.ViewModelFactory
 
@@ -33,6 +36,7 @@ class MoviesListFragment: Fragment() {
     // Views
     private lateinit var moviesListView: RecyclerView
     private lateinit var searchLineView: TextInputLayout
+    private lateinit var offlineLabelView: TextView
 
     private lateinit var moviesAdapter: MovieAdapter
 
@@ -63,6 +67,10 @@ class MoviesListFragment: Fragment() {
         moviesViewModel = ViewModelProvider(this, ViewModelFactory)[MoviesListViewModel::class.java]
         moviesViewModel.loadMovies(searchLineView.editText?.text?.toString())
         loadMovies()
+
+        val isOnline = requireContext().isOnline()
+        searchLineView.isVisible = isOnline
+        offlineLabelView.isVisible = !isOnline
     }
 
     override fun onResume() {
@@ -103,6 +111,7 @@ class MoviesListFragment: Fragment() {
     private fun binding(view: View) = FragmentMoviesListBinding.bind(view)
         .apply { this@MoviesListFragment.moviesListView = moviesListView }
         .apply { this@MoviesListFragment.searchLineView = searchLineView }
+        .apply { this@MoviesListFragment.offlineLabelView = offlineLabelView }
 
     private fun onMovieClick(movie: Movie) {
         requireActivity().supportFragmentManager
