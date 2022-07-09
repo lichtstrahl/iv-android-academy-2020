@@ -12,6 +12,7 @@ import root.iv.ivandroidacademy.data.database.dao.MoviesDao
 import root.iv.ivandroidacademy.data.database.entity.MovieEntity
 import root.iv.ivandroidacademy.data.mapper.Mapper
 import root.iv.ivandroidacademy.network.client.MovieDBApi
+import timber.log.Timber
 import java.net.ConnectException
 
 @ExperimentalPagingApi
@@ -23,30 +24,33 @@ class MoviesMediator(
     private val mapper: Mapper
 ): RemoteMediator<Int, MovieEntity>() {
 
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, MovieEntity>): MediatorResult  {
-        // Номер страницы, которую нужно загрузить
-        val page = when (loadType) {
-            LoadType.REFRESH -> 1
-            LoadType.PREPEND -> null
-            LoadType.APPEND -> state.anchorPosition?.plus(1)
-        } ?: return MediatorResult.Success(endOfPaginationReached = true)
+    override suspend fun load(loadType: LoadType, state: PagingState<Int, MovieEntity>): MediatorResult = kotlin.runCatching {
+            Timber.i("Load [$loadType]: ${state.anchorPosition}")
+            // Номер страницы, которую нужно загрузить
+            val page = when (loadType) {
+                LoadType.REFRESH -> 1
+                LoadType.PREPEND -> null
+                LoadType.APPEND -> state.anchorPosition?.plus(1)
+            } ?: return@runCatching MediatorResult.Success(endOfPaginationReached = true)
+            Timber.i("Load page $page")
 
-        val movies = try {
-            movieDBApi.moviesPopular(page)
-        } catch (e: Exception) {
-            return MediatorResult.Error(e)
-        }
+            val movies = movieDBApi.moviesPopular(page)
 
-        App.database.withTransaction {
-            if (loadType == LoadType.REFRESH)
-                moviesDao.clear()
+            App.database.withTransaction {
+                if (loadType == LoadType.REFRESH) {
+                    Timber.i("Clear cache")
+                    moviesDao.clear()
+                }
 
-            val entities = movies.data.map {
-                mapper.entity(mapper.movie(it, genresCache.get(), configurationCache.get()))
+                val entities = movies.data.map { dto ->
+                    mapper.entity(mapper.movie(dto, genresCache.get().filter { dto.genreIds.contains(it.id) }, configurationCache.get()))
+                }
+
+                Timber.i("Upgrade cache")
+                moviesDao.insertAll(entities)
             }
-            moviesDao.insertAll(entities)
-        }
 
-        return MediatorResult.Success(movies.page >= movies.pages)
-    }
+            return@runCatching MediatorResult.Success(movies.page >= movies.pages)
+        }.getOrElse { MediatorResult.Error(it) }
+
 }
