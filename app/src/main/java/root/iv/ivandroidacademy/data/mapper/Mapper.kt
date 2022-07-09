@@ -1,5 +1,6 @@
 package root.iv.ivandroidacademy.data.mapper
 
+import root.iv.ivandroidacademy.data.database.entity.ActorEntity
 import root.iv.ivandroidacademy.data.database.entity.GenreEntity
 import root.iv.ivandroidacademy.data.database.entity.ImageConfigEntity
 import root.iv.ivandroidacademy.data.database.entity.MovieEntity
@@ -66,12 +67,25 @@ object Mapper {
         profileSizes = imageConfig.profileSizes
     )
 
+    fun entity(actor: Actor, movieId: Long) = ActorEntity(
+        actor.id.toLong(),
+        actor.name,
+        actor.photoUrl,
+        movieId
+    )
+
     fun entity(genre: Genre) = GenreEntity(
         genre.id.toLong(), genre.name
     )
 
     fun genre(entity: GenreEntity) = Genre(
         entity.id.toInt(), entity.name
+    )
+
+    fun actor(entity: ActorEntity) = Actor(
+        entity.id.toInt(),
+        entity.name,
+        entity.photoUrl
     )
 
     fun genre(dto: GenreDTO) = Genre(

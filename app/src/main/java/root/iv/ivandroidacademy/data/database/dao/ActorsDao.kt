@@ -15,6 +15,9 @@ interface ActorsDao {
     @Query("SELECT * FROM actors WHERE id IN (:ids)")
     suspend fun actors(ids: List<Long>): List<ActorEntity>
 
+    @Query("SELECT * FROM actors WHERE movie_id = :movieId")
+    suspend fun actorsByMovieId(movieId: Long): List<ActorEntity>
+
     @Insert(onConflict = REPLACE)
     suspend fun insertAll(actors: List<ActorEntity>)
 }

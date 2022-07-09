@@ -12,5 +12,7 @@ data class ActorEntity(
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "photo_url")
-    val photoUrl: String
+    val photoUrl: String?,
+    @ColumnInfo(name = "movie_id")
+    val movieId: Long
 )

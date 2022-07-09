@@ -79,7 +79,7 @@ class MovieDetailsFragment: Fragment() {
     override fun onStart() {
         super.onStart()
         movieDetailsViewModel = ViewModelProvider(this, ViewModelFactory)[MovieDetailsViewModel::class.java]
-        movieDetailsViewModel.loadDetails(movieId)
+        movieDetailsViewModel.loadDetails(this.viewLifecycleOwner, movieId)
         loadActors()
     }
 

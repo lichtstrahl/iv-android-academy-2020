@@ -1,5 +1,7 @@
 package root.iv.ivandroidacademy.data.interactor
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +13,7 @@ import root.iv.ivandroidacademy.data.mapper.Mapper
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.data.model.dto.MovieDTO
 import root.iv.ivandroidacademy.network.client.MovieDBApi
+import root.iv.ivandroidacademy.viewmodel.util.DataState
 import timber.log.Timber
 
 class MovieInteractor(
@@ -20,10 +23,15 @@ class MovieInteractor(
     private val movieDBApi: MovieDBApi
 ) {
 
-    suspend fun movie(movieId: Int): Movie? = withContext(Dispatchers.IO) {
-        movieDBApi.movie(movieId).let {
-            mapper.movie(it, it.genres(), configurationCache.get())
-        }
+    suspend fun movie(movieId: Int): LiveData<DataState<Movie>> = liveData {
+        emit(DataState.Loading(0))
+        val dataState = kotlin.runCatching {
+            movieDBApi.movie(movieId)
+                .let { mapper.movie(it, it.genres(), configurationCache.get()) }
+                .let { DataState.Success(it) }
+        }.getOrElse { DataState.Error(it) }
+
+        emit(dataState)
     }
 
     /**

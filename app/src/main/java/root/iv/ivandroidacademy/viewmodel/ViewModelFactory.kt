@@ -20,7 +20,9 @@ object ViewModelFactory: ViewModelProvider.Factory {
 
     // Interactors
     private val movieInteractor = MovieInteractor(genresCache, configurationCache, Mapper, App.movieDBApi)
-    private val actorInteractor = ActorsInteractor(App.movieDBApi, configurationCache, Mapper)
+    private val actorInteractor = ActorsInteractor(
+        App.movieDBApi, App.actorsDao, configurationCache, Mapper
+    )
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T = when (modelClass) {
         MovieDetailsViewModel::class.java -> MovieDetailsViewModel(

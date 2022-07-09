@@ -17,7 +17,7 @@ import root.iv.ivandroidacademy.data.database.entity.ImageConfigEntity
     entities = [
         MovieEntity::class, ActorEntity::class, ImageConfigEntity::class, GenreEntity::class
                ],
-    version = 2
+    version = 3
 )
 @TypeConverters(ListStringConverter::class)
 abstract class FilmDatabase: RoomDatabase() {
