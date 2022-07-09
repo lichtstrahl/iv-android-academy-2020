@@ -5,9 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -27,23 +24,19 @@ class MoviesListViewModel @ExperimentalPagingApi constructor(
     private val internalMovies = MutableLiveData<PagingData<Movie>>()
     val movies: LiveData<PagingData<Movie>> = internalMovies
 
-    private val scope = CoroutineScope(Dispatchers.Main)
-
     /**
      * Возвращаются фильмы, которые на данный момент есть в БД.
      * Параллельно стартует запрос на получение новых фильмов и обновление их в БД.
      * TODO Не лучшая идея каждый раз очищать БД полностью
      */
     @ExperimentalPagingApi
-    fun loadMovies(search: String? = null) = scope.launch {
-
-
+    fun loadMovies(search: String? = null) = viewModelScope.launch {
         Timber.d("Load movies")
         Pager(
             config = PagingConfig(10),
             remoteMediator = mediatorFactory.moviesMediator()
         ) {
-            if (search == null)
+            if (search.isNullOrBlank())
                 App.moviesDao.popular()
             else
                 movieInteractor.dataSource(search)
@@ -52,9 +45,5 @@ class MoviesListViewModel @ExperimentalPagingApi constructor(
             Timber.d("Post movies")
             internalMovies.postValue(movies)
         }
-    }
-
-    override fun onCleared() {
-        scope.cancel()
     }
 }

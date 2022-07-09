@@ -46,7 +46,6 @@ class App: Application() {
     private fun initRetrofit() {
         val client = OkHttpClient.Builder()
             .addInterceptor(ApiKeyInterceptor())
-            .addInterceptor(ConnectivityInterceptor(this.applicationContext))
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
 
