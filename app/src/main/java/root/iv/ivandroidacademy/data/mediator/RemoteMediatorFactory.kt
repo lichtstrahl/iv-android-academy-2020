@@ -16,9 +16,9 @@ class RemoteMediatorFactory(
     private val mapper: Mapper
 ) {
 
-    fun moviesMediator() = MoviesMediator(
+    fun moviesMediator(search: String?) = MoviesMediator(
         genresCache, configurationCache,
         movieDBApi, moviesDao,
-        mapper
+        mapper, search
     )
 }

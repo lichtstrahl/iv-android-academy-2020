@@ -21,14 +21,19 @@ class MoviesMediator(
     private val configurationCache: ConfigurationCache,
     private val movieDBApi: MovieDBApi,
     private val moviesDao: MoviesDao,
-    private val mapper: Mapper
+    private val mapper: Mapper,
+    private val search: String?
 ): RemoteMediator<Int, MovieEntity>() {
 
+    /**
+     * При [LoadType.REFRESH] с заданной строкой поиска - не нужно ничего перезагружать.
+     * Значит были загружены фильмы через поиск в API
+     */
     override suspend fun load(loadType: LoadType, state: PagingState<Int, MovieEntity>): MediatorResult = kotlin.runCatching {
             Timber.i("Load [$loadType]: ${state.anchorPosition}")
             // Номер страницы, которую нужно загрузить
             val page = when (loadType) {
-                LoadType.REFRESH -> 1
+                LoadType.REFRESH -> if (search.isNullOrBlank()) 1 else null
                 LoadType.PREPEND -> null
                 LoadType.APPEND -> state.anchorPosition?.plus(1)
             } ?: return@runCatching MediatorResult.Success(endOfPaginationReached = true)
