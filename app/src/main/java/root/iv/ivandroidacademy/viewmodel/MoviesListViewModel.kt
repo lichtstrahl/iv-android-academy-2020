@@ -28,7 +28,7 @@ class MoviesListViewModel @ExperimentalPagingApi constructor(
     fun loadMovies(search: String? = null) = viewModelScope.launch {
         Timber.d("Load movies")
         Pager(
-            config = PagingConfig(10),
+            config = PagingConfig(50),
             remoteMediator = mediatorFactory.moviesMediator(search)
         ) {
             if (search.isNullOrBlank())
@@ -37,6 +37,7 @@ class MoviesListViewModel @ExperimentalPagingApi constructor(
                 movieInteractor.dataSource(search)
 
          }.flow
+            .cachedIn(viewModelScope)
             .map { data -> data.map { mapper.movie(it) } }
             .collectLatest { movies ->
                 Timber.d("Post movies")

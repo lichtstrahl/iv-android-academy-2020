@@ -1,12 +1,15 @@
 package root.iv.ivandroidacademy.data.database.entity
 
+import android.provider.BaseColumns
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "movies")
 data class MovieEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = BaseColumns._ID)
+    val dbId: Long? = null,
     @ColumnInfo(name = "id")
     val id: Long,
     @ColumnInfo(name = "title")

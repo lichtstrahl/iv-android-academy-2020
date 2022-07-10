@@ -47,6 +47,7 @@ object Mapper {
     )
 
     fun entity(movie: Movie) = MovieEntity(
+        null,
         movie.id.toLong(),
         movie.title,
         movie.tags,

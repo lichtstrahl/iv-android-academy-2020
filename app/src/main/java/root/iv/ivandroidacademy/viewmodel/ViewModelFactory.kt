@@ -33,7 +33,7 @@ object ViewModelFactory: ViewModelProvider.Factory {
             movieInteractor,
             RemoteMediatorFactory(
                 genresCache, configurationCache,
-                App.movieDBApi, App.moviesDao,
+                App.movieDBApi, App.moviesDao, App.moviesRemoteKeyDao,
                 Mapper
             ),
             Mapper
