@@ -1,9 +1,7 @@
 package root.iv.ivandroidacademy.viewmodel
 
+import android.view.View
 import androidx.lifecycle.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import root.iv.ivandroidacademy.data.interactor.ActorsInteractor
 import root.iv.ivandroidacademy.data.interactor.MovieInteractor
@@ -23,51 +21,47 @@ class MovieDetailsViewModel(
     private val internalActors = MutableLiveData<List<Actor>>()
     val actors: LiveData<List<Actor>> = internalActors
 
-    private val internalNetworkError = MutableLiveData<String>()
-    val networkError: LiveData<String> = internalNetworkError
+    private val internalError = MutableLiveData<String>()
+    val error: LiveData<String> = internalError
 
 
-    /**
-     * Загрузка деталей о фильме и списка актёров:
-     *  * Фильм
-     *  1. Отправка запроса в БД. Отображение если что-то вернулось.
-     *  2. Отправка запроса в сеть. Если успех - обновится кеш и отобразятся новые данные.
-     *  * Актёры:
-     *  1. Отправка запроса в БД. Отображение если что-то вернулось.
-     *  2. Отправка запроса в сеть. Если успех - обновится кеш и отобразятся новые данные.
-     */
-    fun loadDetails(lifecycleOwner: LifecycleOwner, movieId: Int) = viewModelScope.launch {
+    private val internalActorsLoading = MutableLiveData<ActorsLoadingInfo>()
+    val actorsLoading: LiveData<ActorsLoadingInfo> = internalActorsLoading
 
-        movieInteractor.cacheMovie(movieId).observe(lifecycleOwner, Observer { state ->
-            when (state) {
-                is DataState.Success<Movie> -> internalMovie.postValue(state.data!!)
-                else -> throw IllegalStateException()
-            }
-        })
-
-        movieInteractor.movie(movieId).observe(lifecycleOwner, Observer { state ->
+    fun loadDetails(movieId: Int) = viewModelScope.launch {
+        movieInteractor.movie(movieId).collect { state ->
             when (state) {
                 is DataState.Loading -> Timber.i("Loading ${state.progress}")
-                is DataState.Success<Movie> -> internalMovie.postValue(state.data!!)
-                is DataState.Error -> internalNetworkError.postValue(state.t.localizedMessage)
+                is DataState.Success -> state.data.also { internalMovie.value = it }
+                is DataState.Error -> internalError.postValue(state.t.localizedMessage)
             }
-        })
+        }
 
-        actorsInteractor.cacheActors(movieId).observe(lifecycleOwner, Observer { state ->
+        actorsInteractor.actors(movieId).collect { state ->
             when (state) {
-                is DataState.Success -> internalActors.postValue(state.data!!)
-                else -> throw IllegalStateException("")
+                is DataState.Loading -> internalActorsLoading.postValue(ActorsLoadingInfo.loading())
+                is DataState.Success -> {
+                    state.data.let { internalActors.postValue(it) }
+                    internalActorsLoading.postValue(ActorsLoadingInfo.loaded())
+                }
+                is DataState.Error -> {
+                    internalError.postValue(state.t.localizedMessage)
+                    internalActorsLoading.postValue(ActorsLoadingInfo.loaded())
+                }
             }
-        })
-
-        actorsInteractor.actors(movieId).observe(lifecycleOwner, Observer { state ->
-            when (state) {
-                // TODO Реализовать показ загрузки
-                is DataState.Loading -> Timber.i("Loading ${state.progress}")
-                is DataState.Success -> internalActors.postValue(state.data!!)
-                is DataState.Error -> internalNetworkError.postValue(state.t.localizedMessage)
-            }
-        })
+        }
     }
 
+    /**
+     * Необходимая информация для отображения загрузки списка актёров
+     */
+    data class ActorsLoadingInfo(
+        val actorsListViewVisible: Int,
+        val actorsLoaderVisible: Int
+    ) {
+        companion object {
+            fun loading() = ActorsLoadingInfo(View.INVISIBLE, View.VISIBLE)
+            fun loaded() = ActorsLoadingInfo(View.VISIBLE, View.GONE)
+        }
+    }
 }

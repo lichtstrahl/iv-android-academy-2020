@@ -14,7 +14,7 @@ interface MoviesDao {
     fun popular(): PagingSource<Int, MovieEntity>
 
     @Query("SELECT * FROM movies WHERE id = :movieId")
-    suspend fun movieById(movieId: Long): MovieEntity
+    suspend fun movieById(movieId: Long): MovieEntity?
 
     @Query("DELETE FROM movies")
     suspend fun clear()

@@ -24,11 +24,6 @@ class MoviesListViewModel @ExperimentalPagingApi constructor(
     private val internalMovies = MutableLiveData<PagingData<Movie>>()
     val movies: LiveData<PagingData<Movie>> = internalMovies
 
-    /**
-     * Возвращаются фильмы, которые на данный момент есть в БД.
-     * Параллельно стартует запрос на получение новых фильмов и обновление их в БД.
-     * TODO Не лучшая идея каждый раз очищать БД полностью
-     */
     @ExperimentalPagingApi
     fun loadMovies(search: String? = null) = viewModelScope.launch {
         Timber.d("Load movies")

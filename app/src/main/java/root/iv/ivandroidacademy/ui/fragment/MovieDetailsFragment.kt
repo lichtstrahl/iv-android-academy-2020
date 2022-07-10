@@ -18,8 +18,8 @@ import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Actor
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FragmentMovieDetailsBinding
-import root.iv.ivandroidacademy.ui.component.adapter.ActorAdapter
 import root.iv.ivandroidacademy.ui.component.RankGroup
+import root.iv.ivandroidacademy.ui.component.adapter.ActorAdapter
 import root.iv.ivandroidacademy.viewmodel.MovieDetailsViewModel
 import root.iv.ivandroidacademy.viewmodel.ViewModelFactory
 import kotlin.math.roundToInt
@@ -79,8 +79,7 @@ class MovieDetailsFragment: Fragment() {
     override fun onStart() {
         super.onStart()
         movieDetailsViewModel = ViewModelProvider(this, ViewModelFactory)[MovieDetailsViewModel::class.java]
-        movieDetailsViewModel.loadDetails(this.viewLifecycleOwner, movieId)
-        loadActors()
+        movieDetailsViewModel.loadDetails(movieId)
     }
 
     override fun onResume() {
@@ -88,7 +87,8 @@ class MovieDetailsFragment: Fragment() {
 
         movieDetailsViewModel.movie.observe(this.viewLifecycleOwner, this::viewMovie)
         movieDetailsViewModel.actors.observe(this.viewLifecycleOwner, this::viewActors)
-        movieDetailsViewModel.networkError.observe(this.viewLifecycleOwner, this::viewNetworkError)
+        movieDetailsViewModel.error.observe(this.viewLifecycleOwner, this::viewError)
+        movieDetailsViewModel.actorsLoading.observe(this.viewLifecycleOwner, this::viewActorsLoading)
     }
 
     // ---
@@ -111,31 +111,25 @@ class MovieDetailsFragment: Fragment() {
     private fun viewMovie(movie: Movie) {
         backgroundLogo.load(movie.poster2)
 
-        ageLimit.text = "${movie.ageLimit}+"
+        ageLimit.text = getString(R.string.age_limit_fmt, movie.ageLimit)
         title.text = movie.title
         tags.text = movie.tags
         rankGroup.draw(movie.rating.roundToInt())
-        reviewCount.text = "${movie.reviewsCount} REVIEWS"
+        reviewCount.text = getString(R.string.reviews_count_fmt, movie.reviewsCount)
         story.text = movie.storyline
     }
 
     private fun viewActors(actors: List<Actor>) {
         actorAdapter.resetData(actors)
-        actorsLoaded()
     }
 
-    private fun viewNetworkError(errorMsg: String) {
+    private fun viewError(errorMsg: String) {
         Snackbar.make(this.requireView(), errorMsg, Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun loadActors() {
-        this.actorsLoader.visibility = View.VISIBLE
-        this.actorsListView.visibility = View.INVISIBLE
-    }
-
-    private fun actorsLoaded() {
-        this.actorsLoader.visibility = View.GONE
-        this.actorsListView.visibility = View.VISIBLE
+    private fun viewActorsLoading(info: MovieDetailsViewModel.ActorsLoadingInfo) {
+        this.actorsLoader.visibility = info.actorsLoaderVisible
+        this.actorsListView.visibility = info.actorsListViewVisible
     }
 
     private fun back(view: View) = this.requireActivity().onBackPressed()

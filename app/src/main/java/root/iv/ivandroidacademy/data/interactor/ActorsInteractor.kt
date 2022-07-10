@@ -1,7 +1,5 @@
 package root.iv.ivandroidacademy.data.interactor
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import root.iv.ivandroidacademy.data.cache.ConfigurationCache
@@ -17,30 +15,29 @@ class ActorsInteractor(
     private val configurationCache: ConfigurationCache,
     private val mapper: Mapper
 ) {
-
-    suspend fun cacheActors(movieId: Int): LiveData<DataState<List<Actor>>> = liveData {
-        val dataState = actorsDao.actorsByMovieId(movieId.toLong())
-            .map { mapper.actor(it) }
-            .let { DataState.Success(it) }
-        emit(dataState)
-    }
-
-    suspend fun actors(movieId: Int): LiveData<DataState<List<Actor>>> = liveData {
+    /**
+     * Попытка загрузить данные из сети - если неудача, то отображение из кеша.
+     */
+    suspend fun actors(movieId: Int): Flow<DataState<List<Actor>>> = flow {
         emit(DataState.Loading(0))
-        val dataState = kotlin.runCatching {
-            movieDBApi.actors(movieId)
+
+        kotlin.runCatching {
+            val actors = movieDBApi.actors(movieId)
                 .cast
                 .map { mapper.actor(it, configurationCache.get()) }
                 .also { actors ->
-                    actorsDao.insertAll(actors.map {
-                        mapper.entity(
-                            it,
-                            movieId.toLong()
-                        )
-                    })
+                    actorsDao.insertAll(actors.map { mapper.entity(it, movieId.toLong()) })
                 }
-                .let { DataState.Success(it) }
-        }.getOrElse { DataState.Error(it) }
-        emit(dataState)
+            emit(DataState.Success(actors))
+        }.onFailure {
+            val actors = actorsDao.actorsByMovieId(movieId.toLong())
+                .map { mapper.actor(it) }
+
+            val state = if (actors.isEmpty())
+                DataState.Error(NoSuchElementException("Couldn't get actors from network. Not found actors in cache."))
+            else
+                DataState.Success(actors)
+            emit(state)
+        }
     }
 }

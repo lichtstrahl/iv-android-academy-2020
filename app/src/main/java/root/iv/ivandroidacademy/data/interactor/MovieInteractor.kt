@@ -1,9 +1,13 @@
 package root.iv.ivandroidacademy.data.interactor
 
+import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import root.iv.ivandroidacademy.data.cache.ConfigurationCache
 import root.iv.ivandroidacademy.data.cache.GenresCache
 import root.iv.ivandroidacademy.data.database.dao.MoviesDao
@@ -23,23 +27,22 @@ class MovieInteractor(
     private val moviesDao: MoviesDao
 ) {
 
-    suspend fun cacheMovie(movieId: Int): LiveData<DataState<Movie>> = liveData {
-        val dataState = moviesDao.movieById(movieId.toLong())
-            .let { mapper.movie(it) }
-            .let { DataState.Success(it) }
-
-        emit(dataState)
-    }
-
-    suspend fun movie(movieId: Int): LiveData<DataState<Movie>> = liveData {
+    suspend fun movie(movieId: Int): Flow<DataState<Movie>> = flow {
         emit(DataState.Loading(0))
-        val dataState = kotlin.runCatching {
-            movieDBApi.movie(movieId)
-                .let { mapper.movie(it, it.genres(), configurationCache.get()) }
-                .let { DataState.Success(it) }
-        }.getOrElse { DataState.Error(it) }
 
-        emit(dataState)
+        kotlin.runCatching {
+            val movie = movieDBApi.movie(movieId)
+                .let { mapper.movie(it, it.genres(), configurationCache.get()) }
+            emit(DataState.Success(movie))
+        }.onFailure {
+            val movie = moviesDao.movieById(movieId.toLong())
+                ?.let { mapper.movie(it) }
+
+            val state = movie
+                ?.let { DataState.Success(it) }
+                ?: DataState.Error(NoSuchElementException("Couldn't get movie $movieId from network. Not found movie in cache."))
+            emit(state)
+        }
     }
 
     /**

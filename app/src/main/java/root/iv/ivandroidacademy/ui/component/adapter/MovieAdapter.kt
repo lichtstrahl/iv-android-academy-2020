@@ -1,5 +1,6 @@
 package root.iv.ivandroidacademy.ui.component.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +17,12 @@ import root.iv.ivandroidacademy.ui.loadBackground
 import kotlin.math.roundToInt
 
 class MovieAdapter(
-    private val listener: (Movie) -> Unit
+    private val listener: (Movie) -> Unit,
+    ctx: Context
 ): PagingDataAdapter<Movie, MovieAdapter.MovieViewHolder>(DIFF_UTIL_CALLBACK) {
+
+    private val ageLimitFmt = ctx.getString(R.string.age_limit_fmt)
+    private val reviewCountFmt = ctx.getString(R.string.reviews_count_fmt)
 
     companion object {
         private val DIFF_UTIL_CALLBACK = object : DiffUtil.ItemCallback<Movie>() {
@@ -27,7 +32,11 @@ class MovieAdapter(
         }
     }
 
-    class MovieViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class MovieViewHolder(
+        itemView: View,
+        private val ageLimitFmt: String,
+        private val reviewCountFmt: String
+    ): RecyclerView.ViewHolder(itemView) {
 
         private val ageLimit: TextView
         private val like: ImageView
@@ -51,12 +60,12 @@ class MovieAdapter(
         }
 
         fun bind(movie: Movie) {
-            ageLimit.text = "${movie.ageLimit}+"
+            ageLimit.text = ageLimitFmt.format(movie.ageLimit)
             tag.text = movie.tags
 
             this.logo.loadBackground(movie.poster)
             rankGroup.draw(movie.rating.roundToInt())
-            reviewCount.text = "${movie.reviewsCount} REVIEWS"
+            reviewCount.text = reviewCountFmt.format(movie.reviewsCount)
             title.text = movie.title
             time.text = movie.duration?.let { "$it MIN" } ?: "-"
         }
@@ -65,8 +74,7 @@ class MovieAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder = LayoutInflater
         .from(parent.context)
         .inflate(R.layout.film_card, parent, false)
-        .let { MovieViewHolder(it) }
-
+        .let { MovieViewHolder(it, ageLimitFmt, reviewCountFmt) }
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         getItem(position)
             ?.also { holder.bind(it) }

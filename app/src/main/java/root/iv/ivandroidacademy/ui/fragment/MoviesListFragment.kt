@@ -55,7 +55,7 @@ class MoviesListFragment: Fragment() {
         val view = inflater.inflate(R.layout.fragment_movies_list, container, false)
             .apply { binding(this) }
 
-        moviesAdapter = MovieAdapter(this::onMovieClick)
+        moviesAdapter = MovieAdapter(this::onMovieClick, requireContext())
         moviesListView.adapter = moviesAdapter
         moviesListView.layoutManager = GridLayoutManager(this.requireContext(), 2, GridLayoutManager.VERTICAL, false)
 
