@@ -13,7 +13,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import kotlinx.coroutines.*
+import com.google.android.material.snackbar.Snackbar
 import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Actor
 import root.iv.ivandroidacademy.data.model.Movie
@@ -86,8 +86,9 @@ class MovieDetailsFragment: Fragment() {
     override fun onResume() {
         super.onResume()
 
-        movieDetailsViewModel.movie.observe(this.viewLifecycleOwner, this::drawMovie)
-        movieDetailsViewModel.actors.observe(this.viewLifecycleOwner, this::drawActors)
+        movieDetailsViewModel.movie.observe(this.viewLifecycleOwner, this::viewMovie)
+        movieDetailsViewModel.actors.observe(this.viewLifecycleOwner, this::viewActors)
+        movieDetailsViewModel.networkError.observe(this.viewLifecycleOwner, this::viewNetworkError)
     }
 
     // ---
@@ -107,7 +108,7 @@ class MovieDetailsFragment: Fragment() {
         .apply { this@MovieDetailsFragment.story = this.viewStoryline }
         .apply { this@MovieDetailsFragment.actorsLoader = this.actorsLoader }
 
-    private fun drawMovie(movie: Movie) {
+    private fun viewMovie(movie: Movie) {
         backgroundLogo.load(movie.poster2)
 
         ageLimit.text = "${movie.ageLimit}+"
@@ -118,9 +119,13 @@ class MovieDetailsFragment: Fragment() {
         story.text = movie.storyline
     }
 
-    private fun drawActors(actors: List<Actor>) {
+    private fun viewActors(actors: List<Actor>) {
         actorAdapter.resetData(actors)
         actorsLoaded()
+    }
+
+    private fun viewNetworkError(errorMsg: String) {
+        Snackbar.make(this.requireView(), errorMsg, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun loadActors() {

@@ -23,27 +23,39 @@ class MovieDetailsViewModel(
     private val internalActors = MutableLiveData<List<Actor>>()
     val actors: LiveData<List<Actor>> = internalActors
 
+    private val internalNetworkError = MutableLiveData<String>()
+    val networkError: LiveData<String> = internalNetworkError
+
 
     /**
      * Загрузка деталей о фильме и списка актёров:
      *  * Фильм
-     *  TODO Реализовать логику по аналогии с актёрами
+     *  1. Отправка запроса в БД. Отображение если что-то вернулось.
+     *  2. Отправка запроса в сеть. Если успех - обновится кеш и отобразятся новые данные.
      *  * Актёры:
      *  1. Отправка запроса в БД. Отображение если что-то вернулось.
-     *  2. Отправка запроса в сеть. Если он успешно завершится - обновится кеш и
+     *  2. Отправка запроса в сеть. Если успех - обновится кеш и отобразятся новые данные.
      */
     fun loadDetails(lifecycleOwner: LifecycleOwner, movieId: Int) = viewModelScope.launch {
+
+        movieInteractor.cacheMovie(movieId).observe(lifecycleOwner, Observer { state ->
+            when (state) {
+                is DataState.Success<Movie> -> internalMovie.postValue(state.data!!)
+                else -> throw IllegalStateException()
+            }
+        })
+
         movieInteractor.movie(movieId).observe(lifecycleOwner, Observer { state ->
             when (state) {
-                is DataState.Success<Movie> -> internalMovie.postValue(state.data)
                 is DataState.Loading -> Timber.i("Loading ${state.progress}")
-                is DataState.Error -> Timber.e("Error: ${state.t.localizedMessage}")
+                is DataState.Success<Movie> -> internalMovie.postValue(state.data!!)
+                is DataState.Error -> internalNetworkError.postValue(state.t.localizedMessage)
             }
         })
 
         actorsInteractor.cacheActors(movieId).observe(lifecycleOwner, Observer { state ->
             when (state) {
-                is DataState.Success -> internalActors.postValue(state.data)
+                is DataState.Success -> internalActors.postValue(state.data!!)
                 else -> throw IllegalStateException("")
             }
         })
@@ -52,9 +64,8 @@ class MovieDetailsViewModel(
             when (state) {
                 // TODO Реализовать показ загрузки
                 is DataState.Loading -> Timber.i("Loading ${state.progress}")
-                is DataState.Success -> internalActors.postValue(state.data)
-                // TODO Реализовать показ ошибки загрузки
-                is DataState.Error -> Timber.e("Error: ${state.t.localizedMessage}")
+                is DataState.Success -> internalActors.postValue(state.data!!)
+                is DataState.Error -> internalNetworkError.postValue(state.t.localizedMessage)
             }
         })
     }

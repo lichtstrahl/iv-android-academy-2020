@@ -4,10 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import root.iv.ivandroidacademy.data.cache.ConfigurationCache
 import root.iv.ivandroidacademy.data.cache.GenresCache
+import root.iv.ivandroidacademy.data.database.dao.MoviesDao
 import root.iv.ivandroidacademy.data.database.entity.MovieEntity
 import root.iv.ivandroidacademy.data.mapper.Mapper
 import root.iv.ivandroidacademy.data.model.Movie
@@ -20,8 +19,17 @@ class MovieInteractor(
     private val genresCache: GenresCache,
     private val configurationCache: ConfigurationCache,
     private val mapper: Mapper,
-    private val movieDBApi: MovieDBApi
+    private val movieDBApi: MovieDBApi,
+    private val moviesDao: MoviesDao
 ) {
+
+    suspend fun cacheMovie(movieId: Int): LiveData<DataState<Movie>> = liveData {
+        val dataState = moviesDao.movieById(movieId.toLong())
+            .let { mapper.movie(it) }
+            .let { DataState.Success(it) }
+
+        emit(dataState)
+    }
 
     suspend fun movie(movieId: Int): LiveData<DataState<Movie>> = liveData {
         emit(DataState.Loading(0))

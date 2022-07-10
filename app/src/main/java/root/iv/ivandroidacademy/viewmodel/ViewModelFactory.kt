@@ -19,7 +19,7 @@ object ViewModelFactory: ViewModelProvider.Factory {
     private val configurationCache = ConfigurationCache(App.movieDBApi, App.imageConfigDao, Mapper)
 
     // Interactors
-    private val movieInteractor = MovieInteractor(genresCache, configurationCache, Mapper, App.movieDBApi)
+    private val movieInteractor = MovieInteractor(genresCache, configurationCache, Mapper, App.movieDBApi, App.moviesDao)
     private val actorInteractor = ActorsInteractor(
         App.movieDBApi, App.actorsDao, configurationCache, Mapper
     )

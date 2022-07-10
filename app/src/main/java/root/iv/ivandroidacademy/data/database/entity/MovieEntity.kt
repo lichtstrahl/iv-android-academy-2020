@@ -1,6 +1,5 @@
 package root.iv.ivandroidacademy.data.database.entity
 
-import android.provider.BaseColumns
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
