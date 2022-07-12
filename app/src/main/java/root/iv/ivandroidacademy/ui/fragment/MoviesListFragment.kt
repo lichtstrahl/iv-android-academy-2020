@@ -65,7 +65,6 @@ class MoviesListFragment: Fragment() {
     override fun onStart() {
         super.onStart()
         moviesViewModel = ViewModelProvider(this, ViewModelFactory)[MoviesListViewModel::class.java]
-        moviesViewModel.loadMovies(searchLineView.editText?.text?.toString())
         loadMovies()
 
         val isOnline = requireContext().isOnline()

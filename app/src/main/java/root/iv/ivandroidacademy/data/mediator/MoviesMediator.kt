@@ -15,7 +15,6 @@ import root.iv.ivandroidacademy.data.database.entity.MoviesRemoteKeyEntity
 import root.iv.ivandroidacademy.data.mapper.Mapper
 import root.iv.ivandroidacademy.network.client.MovieDBApi
 import timber.log.Timber
-import java.net.ConnectException
 
 @ExperimentalPagingApi
 class MoviesMediator(

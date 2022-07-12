@@ -18,6 +18,7 @@ import root.iv.ivandroidacademy.data.database.dao.*
 import root.iv.ivandroidacademy.network.client.MovieDBApi
 import root.iv.ivandroidacademy.network.interceptor.ApiKeyInterceptor
 import root.iv.ivandroidacademy.work.UpdateCacheWorker
+import root.iv.ivandroidacademy.work.UpdatePopularMoviesWorker
 import root.iv.ivandroidacademy.work.WorkConstraints
 import timber.log.Timber
 import java.time.Duration
@@ -77,10 +78,16 @@ class App: Application() {
     }
 
     private fun initUpdateCacheWork() {
-        val periodicWorkRequest = PeriodicWorkRequestBuilder<UpdateCacheWorker>(Duration.ofHours(24))
+        val updateCacheRequest = PeriodicWorkRequestBuilder<UpdateCacheWorker>(Duration.ofHours(24))
             .setConstraints(WorkConstraints.updateCacheConstraint)
             .build()
         WorkManager.getInstance(applicationContext)
-            .enqueueUniquePeriodicWork(UpdateCacheWorker.NAME, ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest)
+            .enqueueUniquePeriodicWork(UpdateCacheWorker.NAME, ExistingPeriodicWorkPolicy.REPLACE, updateCacheRequest)
+
+        val updatePopularMoviesRequest = PeriodicWorkRequestBuilder<UpdatePopularMoviesWorker>(Duration.ofHours(8))
+            .setConstraints(WorkConstraints.updateCacheConstraint)
+            .build()
+        WorkManager.getInstance(applicationContext)
+            .enqueueUniquePeriodicWork(UpdatePopularMoviesWorker.NAME, ExistingPeriodicWorkPolicy.REPLACE, updatePopularMoviesRequest)
     }
 }
