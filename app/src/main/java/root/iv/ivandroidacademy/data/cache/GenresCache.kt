@@ -18,13 +18,12 @@ class GenresCache(
         return cache.ifEmpty { refresh() }
     }
 
-    override suspend fun refresh(): List<Genre> {
-        val genres = withContext(Dispatchers.IO) {
-            movieDBApi.genres().genres.map { mapper.genre(it) }
-        }
+    override suspend fun refresh(): List<Genre> = withContext(Dispatchers.IO) {
+        val genres = movieDBApi.genres().genres.map { mapper.genre(it) }
 
+        genreDao.clear()
         genreDao.insert(genres.map { mapper.entity(it) })
 
-        return genres
+        return@withContext genres
     }
 }

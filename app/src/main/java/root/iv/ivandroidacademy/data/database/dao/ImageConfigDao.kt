@@ -14,4 +14,7 @@ interface ImageConfigDao {
 
     @Query("SELECT * FROM image_configuration")
     suspend fun selectAll(): List<ImageConfigEntity>
+
+    @Query("DELETE FROM image_configuration")
+    suspend fun clear()
 }

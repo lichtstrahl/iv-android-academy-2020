@@ -2,6 +2,9 @@ package root.iv.ivandroidacademy.app
 
 import android.app.Application
 import androidx.room.Room
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -14,7 +17,10 @@ import root.iv.ivandroidacademy.data.database.FilmDatabase
 import root.iv.ivandroidacademy.data.database.dao.*
 import root.iv.ivandroidacademy.network.client.MovieDBApi
 import root.iv.ivandroidacademy.network.interceptor.ApiKeyInterceptor
+import root.iv.ivandroidacademy.work.UpdateCacheWorker
+import root.iv.ivandroidacademy.work.WorkConstraints
 import timber.log.Timber
+import java.time.Duration
 
 class App: Application() {
 
@@ -38,6 +44,7 @@ class App: Application() {
         initRetrofit()
         initLogging()
         initDatabase()
+        initUpdateCacheWork()
     }
 
     // ---
@@ -67,5 +74,13 @@ class App: Application() {
         database = Room.databaseBuilder(this.applicationContext, FilmDatabase::class.java, "films.db")
             .fallbackToDestructiveMigration()
             .build()
+    }
+
+    private fun initUpdateCacheWork() {
+        val periodicWorkRequest = PeriodicWorkRequestBuilder<UpdateCacheWorker>(Duration.ofHours(24))
+            .setConstraints(WorkConstraints.updateCacheConstraint)
+            .build()
+        WorkManager.getInstance(applicationContext)
+            .enqueueUniquePeriodicWork(UpdateCacheWorker.NAME, ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest)
     }
 }

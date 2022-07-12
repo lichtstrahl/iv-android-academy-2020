@@ -44,6 +44,7 @@ def coilVersion = '2.1.0'
 def pagingVersion = '3.1.1'
 def timberVersion = '5.0.1'
 def roomVersion = '2.4.2'
+def workVersion = '2.7.1'
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -84,5 +85,8 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.room:room-paging:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
+
+    // Work
+    implementation("androidx.work:work-runtime-ktx:$workVersion")
 
 }

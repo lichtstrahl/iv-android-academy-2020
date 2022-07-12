@@ -23,14 +23,13 @@ class ConfigurationCache(
         return config ?: refresh()
     }
 
-    override suspend fun refresh(): ImageConfigurationDTO.Config {
-        val config = withContext(Dispatchers.IO) {
-            movieDBApi.configuration().config
-        }
+    override suspend fun refresh(): ImageConfigurationDTO.Config = withContext(Dispatchers.IO) {
+        val config = movieDBApi.configuration().config
 
+        imageConfigDao.clear()
         imageConfigDao.insert(mapper.entity(config))
 
-        return config
+        return@withContext config
     }
 
 }
