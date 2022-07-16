@@ -85,12 +85,14 @@ class App: Application() {
     private fun initUpdateCacheWork() {
         val updateCacheRequest = PeriodicWorkRequestBuilder<UpdateCacheWorker>(Duration.ofHours(24))
             .setConstraints(WorkConstraints.updateCacheConstraint)
+            .setInitialDelay(Duration.ofSeconds(15))
             .build()
         WorkManager.getInstance(applicationContext)
             .enqueueUniquePeriodicWork(UpdateCacheWorker.NAME, ExistingPeriodicWorkPolicy.REPLACE, updateCacheRequest)
 
         val updatePopularMoviesRequest = PeriodicWorkRequestBuilder<UpdatePopularMoviesWorker>(Duration.ofHours(8))
             .setConstraints(WorkConstraints.updateCacheConstraint)
+            .setInitialDelay(Duration.ofSeconds(15))
             .build()
         WorkManager.getInstance(applicationContext)
             .enqueueUniquePeriodicWork(UpdatePopularMoviesWorker.NAME, ExistingPeriodicWorkPolicy.REPLACE, updatePopularMoviesRequest)

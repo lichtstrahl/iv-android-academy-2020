@@ -11,6 +11,11 @@ import root.iv.ivandroidacademy.data.database.entity.MovieEntity
 import root.iv.ivandroidacademy.data.mapper.Mapper
 import timber.log.Timber
 
+/**
+ * При первом объявлении работы необходимо учитывать параллельный показ списка фильмов, т.е. переобновление БД.
+ * Из-за чего могут приходить фильмы, которые просто не успели ещё записаться в БД.
+ * Поэтому при инициализации работы следует задать init-delay ~10-15 секунд.
+ */
 @ExperimentalPagingApi
 class UpdatePopularMoviesWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(ctx, params) {
 
@@ -76,6 +81,11 @@ class UpdatePopularMoviesWorker(ctx: Context, params: WorkerParameters): Corouti
         }.also {
             App.moviesDao.insertAll(it)
         }
+
+        if (bestMovie == null)
+            Timber.d("Not found new movie")
+        else
+            Timber.d("Found new movie ${bestMovie!!.title}")
 
         return bestMovie
     }
