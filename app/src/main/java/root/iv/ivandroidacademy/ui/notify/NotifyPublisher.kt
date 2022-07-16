@@ -47,6 +47,7 @@ class NotifyPublisher(
             .setContentIntent(movie.pendingIntent(ctx))
             .setSmallIcon(IconCompat.createWithBitmap(icon))
             .setLargeIcon(poster)
+            .setAutoCancel(true)
             .build()
             .apply { manager.notify(1, this) }
     }
