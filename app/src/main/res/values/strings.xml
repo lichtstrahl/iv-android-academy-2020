@@ -17,4 +17,9 @@
     <!-- Отображение информации о фильме -->
     <string name="reviews_count_fmt">%d REVIEWS</string>
     <string name="age_limit_fmt">%d+</string>
+
+    <!-- Уведомления -->
+    <string name="popular_movies_channel">Самые популярные фильмы</string>
+    <string name="popular_movies_channel_desc">Публикация оповещений о самых популярных новых фильмах</string>
+    <string name="popular_movies_notification_content">Доступен новый фильм</string>
 </resources>

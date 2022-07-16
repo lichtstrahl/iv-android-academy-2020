@@ -1,6 +1,7 @@
 package root.iv.ivandroidacademy.app
 
 import android.app.Application
+import androidx.paging.ExperimentalPagingApi
 import androidx.room.Room
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
@@ -17,17 +18,20 @@ import root.iv.ivandroidacademy.data.database.FilmDatabase
 import root.iv.ivandroidacademy.data.database.dao.*
 import root.iv.ivandroidacademy.network.client.MovieDBApi
 import root.iv.ivandroidacademy.network.interceptor.ApiKeyInterceptor
+import root.iv.ivandroidacademy.ui.notify.NotifyPublisher
 import root.iv.ivandroidacademy.work.UpdateCacheWorker
 import root.iv.ivandroidacademy.work.UpdatePopularMoviesWorker
 import root.iv.ivandroidacademy.work.WorkConstraints
 import timber.log.Timber
 import java.time.Duration
 
+@ExperimentalPagingApi
 class App: Application() {
 
     companion object {
         lateinit var movieDBApi: MovieDBApi
         lateinit var database: FilmDatabase
+        lateinit var notifyPublisher: NotifyPublisher
 
         val moviesDao: MoviesDao get() = database.moviesDao()
         val actorsDao: ActorsDao get() = database.actorsDao()
@@ -46,6 +50,7 @@ class App: Application() {
         initLogging()
         initDatabase()
         initUpdateCacheWork()
+        initNotify()
     }
 
     // ---
@@ -89,5 +94,9 @@ class App: Application() {
             .build()
         WorkManager.getInstance(applicationContext)
             .enqueueUniquePeriodicWork(UpdatePopularMoviesWorker.NAME, ExistingPeriodicWorkPolicy.REPLACE, updatePopularMoviesRequest)
+    }
+
+    private fun initNotify() {
+        notifyPublisher = NotifyPublisher(this.applicationContext)
     }
 }

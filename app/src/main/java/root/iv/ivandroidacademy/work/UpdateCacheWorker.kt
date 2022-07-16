@@ -1,6 +1,7 @@
 package root.iv.ivandroidacademy.work
 
 import android.content.Context
+import androidx.paging.ExperimentalPagingApi
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import root.iv.ivandroidacademy.app.App
@@ -12,6 +13,7 @@ import root.iv.ivandroidacademy.data.mapper.Mapper
 /**
  * Обновление доступных кешей в приложении
  */
+@ExperimentalPagingApi
 class UpdateCacheWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(ctx, params) {
 
     private val caches: List<DatabaseCache<*>> = listOf(

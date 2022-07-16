@@ -113,12 +113,7 @@ class MoviesListFragment: Fragment() {
         .apply { this@MoviesListFragment.offlineLabelView = offlineLabelView }
 
     private fun onMovieClick(movie: Movie) {
-        requireActivity().supportFragmentManager
-            .beginTransaction()
-            .addToBackStack(null)
-            .setCustomAnimations(R.anim.open_movie_details, 0, 0, R.anim.close_movie_details)
-            .add(R.id.mainFrame, MovieDetailsFragment.getInstance(movie.id))
-            .commit()
+        requireActivity().supportFragmentManager.openDetails(movie.id)
     }
 
     private fun loadMovies() {

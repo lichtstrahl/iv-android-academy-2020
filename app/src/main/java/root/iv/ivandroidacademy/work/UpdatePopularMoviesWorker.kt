@@ -1,6 +1,7 @@
 package root.iv.ivandroidacademy.work
 
 import android.content.Context
+import androidx.paging.ExperimentalPagingApi
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import root.iv.ivandroidacademy.app.App
@@ -10,6 +11,7 @@ import root.iv.ivandroidacademy.data.database.entity.MovieEntity
 import root.iv.ivandroidacademy.data.mapper.Mapper
 import timber.log.Timber
 
+@ExperimentalPagingApi
 class UpdatePopularMoviesWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(ctx, params) {
 
     // Caches
@@ -29,6 +31,8 @@ class UpdatePopularMoviesWorker(ctx: Context, params: WorkerParameters): Corouti
      */
     override suspend fun doWork(): Result = kotlin.runCatching {
         Timber.d("Update popular movies ($UPDATE_PAGE_COUNT pages)")
+        val bestMovies = mutableListOf<MovieEntity>()
+
         (1..UPDATE_PAGE_COUNT)
             .map { page -> App.movieDBApi.moviesPopular(page) }
             .map { movies ->
@@ -38,7 +42,12 @@ class UpdatePopularMoviesWorker(ctx: Context, params: WorkerParameters): Corouti
                 }
             }
             .map { movies -> movies.map { Mapper.entity(it) } }
-            .forEach { entities -> entities.replaceInCache() }
+            .forEach { entities -> entities.replaceInCache()?.let { bestMovies.add(it) } }
+
+        bestMovies
+            .maxByOrNull { it.rating }
+            ?.apply { App.notifyPublisher.notifyPopularMovie(applicationContext, this) }
+
         Timber.d("Updated successful")
         Result.success()
     }.getOrElse {
@@ -51,11 +60,23 @@ class UpdatePopularMoviesWorker(ctx: Context, params: WorkerParameters): Corouti
     // PRIVATE
     // ---
 
-    private suspend fun List<MovieEntity>.replaceInCache() {
+    /**
+     * @return Новый самый рейтинговый фильм
+     */
+    private suspend fun List<MovieEntity>.replaceInCache(): MovieEntity? {
+        var bestMovie: MovieEntity? = null
         this.map { entity ->
-            entity.apply { this.dbId = App.moviesDao.idByMovieId(this.id) }
+            entity
+                .apply { this.dbId = App.moviesDao.idByMovieId(this.id) }
+                .also {
+                    if (it.dbId == null && it.rating > (bestMovie?.rating ?: -1.0)) {
+                        bestMovie = it
+                    }
+                }
         }.also {
             App.moviesDao.insertAll(it)
         }
+
+        return bestMovie
     }
 }
