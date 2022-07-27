@@ -204,7 +204,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="@dimen/margin_horizontal_std"
             android:layout_marginTop="24dp"
-
             android:text="@string/cast_header"
             android:textColor="@android:color/white"
             android:textStyle="bold"
@@ -233,6 +232,20 @@
             app:layout_constraintTop_toBottomOf="@id/castHeader"
             />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/buttonCalendar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/movieNameGuideline"
+            android:layout_margin="@dimen/margin_horizontal_std"
+            android:backgroundTint="@color/colorPrimaryDark"
+            app:borderWidth="0dp"
+            android:src="@drawable/ic_calendar"
+            app:fabCustomSize="40dp"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,6 +1,9 @@
 package root.iv.ivandroidacademy.ui.fragment
 
+import android.content.ContentUris
+import android.content.Intent
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +16,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Actor
@@ -22,6 +26,7 @@ import root.iv.ivandroidacademy.ui.component.RankGroup
 import root.iv.ivandroidacademy.ui.component.adapter.ActorAdapter
 import root.iv.ivandroidacademy.viewmodel.MovieDetailsViewModel
 import root.iv.ivandroidacademy.viewmodel.ViewModelFactory
+import java.util.*
 import kotlin.math.roundToInt
 
 @ExperimentalPagingApi
@@ -39,6 +44,7 @@ class MovieDetailsFragment: Fragment() {
     private lateinit var story: TextView
     private lateinit var ageLimit: TextView
     private lateinit var actorsLoader: ProgressBar
+    private lateinit var buttonCalendar: FloatingActionButton
     // Adapters
     private lateinit var actorAdapter: ActorAdapter
 
@@ -107,6 +113,7 @@ class MovieDetailsFragment: Fragment() {
         .apply { this@MovieDetailsFragment.reviewCount = this.reviewCountView }
         .apply { this@MovieDetailsFragment.story = this.viewStoryline }
         .apply { this@MovieDetailsFragment.actorsLoader = this.actorsLoader }
+        .apply { this@MovieDetailsFragment.buttonCalendar = this.buttonCalendar }
 
     private fun viewMovie(movie: Movie) {
         backgroundLogo.load(movie.poster2)
@@ -117,6 +124,10 @@ class MovieDetailsFragment: Fragment() {
         rankGroup.draw(movie.rating.roundToInt())
         reviewCount.text = getString(R.string.reviews_count_fmt, movie.reviewsCount)
         story.text = movie.storyline
+
+        buttonCalendar
+            .apply { this.visibility = View.VISIBLE }
+            .setOnClickListener { openCalendar(movie) }
     }
 
     private fun viewActors(actors: List<Actor>) {
@@ -133,4 +144,6 @@ class MovieDetailsFragment: Fragment() {
     }
 
     private fun back(view: View) = this.requireActivity().onBackPressed()
+
+    private fun openCalendar(movie: Movie) = movieDetailsViewModel.scheduleEvent(requireContext(), Calendar.getInstance().timeInMillis, movie)
 }

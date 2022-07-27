@@ -1,7 +1,13 @@
 package root.iv.ivandroidacademy.viewmodel
 
+import android.content.Context
+import android.content.Intent
+import android.provider.CalendarContract
 import android.view.View
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import root.iv.ivandroidacademy.data.interactor.ActorsInteractor
 import root.iv.ivandroidacademy.data.interactor.MovieInteractor
@@ -50,6 +56,17 @@ class MovieDetailsViewModel(
                 }
             }
         }
+    }
+
+    fun scheduleEvent(ctx: Context, time: Long, movie: Movie) {
+        val intent = Intent(Intent.ACTION_INSERT)
+            .setData(CalendarContract.Events.CONTENT_URI)
+            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, time)
+            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, time + movie.duration!!*60*1000)
+            .putExtra(CalendarContract.Events.TITLE, movie.title)
+            .putExtra(CalendarContract.Events.DESCRIPTION, movie.storyline)
+            .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
+        ctx.startActivity(intent)
     }
 
     /**
