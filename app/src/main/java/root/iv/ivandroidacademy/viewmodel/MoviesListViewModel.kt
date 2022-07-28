@@ -8,7 +8,7 @@ import androidx.paging.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import root.iv.ivandroidacademy.app.App
+import root.iv.ivandroidacademy.data.database.dao.MoviesDao
 import root.iv.ivandroidacademy.data.interactor.MovieInteractor
 import root.iv.ivandroidacademy.data.mapper.Mapper
 import root.iv.ivandroidacademy.data.mediator.RemoteMediatorFactory
@@ -18,6 +18,7 @@ import timber.log.Timber
 class MoviesListViewModel @ExperimentalPagingApi constructor(
     private val movieInteractor: MovieInteractor,
     private val mediatorFactory: RemoteMediatorFactory,
+    private val moviesDao: MoviesDao,
     private val mapper: Mapper
 ): ViewModel() {
 
@@ -32,7 +33,7 @@ class MoviesListViewModel @ExperimentalPagingApi constructor(
             remoteMediator = mediatorFactory.moviesMediator(search)
         ) {
             if (search.isNullOrBlank())
-                App.moviesDao.popular()
+                moviesDao.popular()
             else
                 movieInteractor.dataSource(search)
 

@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FragmentMoviesListBinding
+import root.iv.ivandroidacademy.di.component.GlobalComponent
 import root.iv.ivandroidacademy.ui.component.adapter.MovieAdapter
 import root.iv.ivandroidacademy.ui.isOnline
 import root.iv.ivandroidacademy.viewmodel.MoviesListViewModel
@@ -64,7 +65,7 @@ class MoviesListFragment: Fragment() {
 
     override fun onStart() {
         super.onStart()
-        moviesViewModel = ViewModelProvider(this, ViewModelFactory)[MoviesListViewModel::class.java]
+        moviesViewModel = ViewModelProvider(this, ViewModelFactory(GlobalComponent.component(requireContext())))[MoviesListViewModel::class.java]
         loadMovies()
 
         val isOnline = requireContext().isOnline()

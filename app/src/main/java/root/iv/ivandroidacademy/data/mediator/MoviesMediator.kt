@@ -8,6 +8,7 @@ import androidx.room.withTransaction
 import root.iv.ivandroidacademy.app.App
 import root.iv.ivandroidacademy.data.cache.ConfigurationCache
 import root.iv.ivandroidacademy.data.cache.GenresCache
+import root.iv.ivandroidacademy.data.database.FilmDatabase
 import root.iv.ivandroidacademy.data.database.dao.MoviesDao
 import root.iv.ivandroidacademy.data.database.dao.MoviesRemoteKeyDao
 import root.iv.ivandroidacademy.data.database.entity.MovieEntity
@@ -24,6 +25,7 @@ class MoviesMediator(
     private val moviesDao: MoviesDao,
     private val moviesRemoteKeyDao: MoviesRemoteKeyDao,
     private val mapper: Mapper,
+    private val database: FilmDatabase,
     private val search: String?
 ): RemoteMediator<Int, MovieEntity>() {
 
@@ -37,13 +39,13 @@ class MoviesMediator(
             val page = when (loadType) {
                 LoadType.REFRESH -> if (search.isNullOrBlank()) 1 else null
                 LoadType.PREPEND -> null
-                LoadType.APPEND -> App.database.withTransaction { moviesRemoteKeyDao.remoteKeyBySearch(search?:"") }.nextPage
+                LoadType.APPEND -> database.withTransaction { moviesRemoteKeyDao.remoteKeyBySearch(search?:"") }.nextPage
             } ?: return@runCatching MediatorResult.Success(endOfPaginationReached = true)
             Timber.i("Load page $page")
 
             val movies = movieDBApi.moviesPopular(page)
 
-            App.database.withTransaction {
+            database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     Timber.i("Clear cache")
                     moviesDao.clear()

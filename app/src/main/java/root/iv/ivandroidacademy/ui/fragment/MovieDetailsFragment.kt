@@ -22,6 +22,7 @@ import root.iv.ivandroidacademy.R
 import root.iv.ivandroidacademy.data.model.Actor
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FragmentMovieDetailsBinding
+import root.iv.ivandroidacademy.di.component.GlobalComponent
 import root.iv.ivandroidacademy.ui.component.RankGroup
 import root.iv.ivandroidacademy.ui.component.adapter.ActorAdapter
 import root.iv.ivandroidacademy.viewmodel.MovieDetailsViewModel
@@ -84,7 +85,7 @@ class MovieDetailsFragment: Fragment() {
 
     override fun onStart() {
         super.onStart()
-        movieDetailsViewModel = ViewModelProvider(this, ViewModelFactory)[MovieDetailsViewModel::class.java]
+        movieDetailsViewModel = ViewModelProvider(this, ViewModelFactory(GlobalComponent.component(requireContext())))[MovieDetailsViewModel::class.java]
         movieDetailsViewModel.loadDetails(movieId)
     }
 

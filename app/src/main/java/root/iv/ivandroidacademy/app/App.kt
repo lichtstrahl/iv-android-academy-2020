@@ -30,14 +30,12 @@ class App: Application() {
 
     companion object {
         lateinit var movieDBApi: MovieDBApi
-        lateinit var database: FilmDatabase
+        private lateinit var database: FilmDatabase
         lateinit var notifyPublisher: NotifyPublisher
 
         val moviesDao: MoviesDao get() = database.moviesDao()
-        val actorsDao: ActorsDao get() = database.actorsDao()
         val genresDao: GenresDao get() = database.genresDao()
         val imageConfigDao: ImageConfigDao get() = database.imageConfigDao()
-        val moviesRemoteKeyDao: MoviesRemoteKeyDao get() = database.moviesRemoteKeyDao()
     }
 
     private val json = Json { ignoreUnknownKeys = true }

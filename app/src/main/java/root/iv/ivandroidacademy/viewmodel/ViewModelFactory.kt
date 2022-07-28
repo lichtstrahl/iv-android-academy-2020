@@ -3,25 +3,27 @@ package root.iv.ivandroidacademy.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.ExperimentalPagingApi
-import root.iv.ivandroidacademy.app.App
 import root.iv.ivandroidacademy.data.cache.ConfigurationCache
 import root.iv.ivandroidacademy.data.cache.GenresCache
 import root.iv.ivandroidacademy.data.interactor.ActorsInteractor
 import root.iv.ivandroidacademy.data.interactor.MovieInteractor
 import root.iv.ivandroidacademy.data.mapper.Mapper
 import root.iv.ivandroidacademy.data.mediator.RemoteMediatorFactory
+import root.iv.ivandroidacademy.di.component.GlobalComponent
 
 @ExperimentalPagingApi
-object ViewModelFactory: ViewModelProvider.Factory {
+class ViewModelFactory(
+    private val globalComponent: GlobalComponent
+): ViewModelProvider.Factory {
 
     // Caches
-    private val genresCache = GenresCache(App.movieDBApi, App.genresDao, Mapper)
-    private val configurationCache = ConfigurationCache(App.movieDBApi, App.imageConfigDao, Mapper)
+    private val genresCache = GenresCache(globalComponent.movieDbApi(), globalComponent.genresDao(), Mapper)
+    private val configurationCache = ConfigurationCache(globalComponent.movieDbApi(), globalComponent.imageConfigDao(), Mapper)
 
     // Interactors
-    private val movieInteractor = MovieInteractor(genresCache, configurationCache, Mapper, App.movieDBApi, App.moviesDao)
+    private val movieInteractor = MovieInteractor(genresCache, configurationCache, Mapper, globalComponent.movieDbApi(), globalComponent.moviesDao())
     private val actorInteractor = ActorsInteractor(
-        App.movieDBApi, App.actorsDao, configurationCache, Mapper
+        globalComponent.movieDbApi(), globalComponent.actorsDao(), configurationCache, Mapper
     )
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T = when (modelClass) {
@@ -33,9 +35,11 @@ object ViewModelFactory: ViewModelProvider.Factory {
             movieInteractor,
             RemoteMediatorFactory(
                 genresCache, configurationCache,
-                App.movieDBApi, App.moviesDao, App.moviesRemoteKeyDao,
+                globalComponent.movieDbApi(), globalComponent.moviesDao(), globalComponent.remoteKeysDao(),
+                globalComponent.database(),
                 Mapper
             ),
+            globalComponent.moviesDao(),
             Mapper
         )
         else -> throw IllegalStateException("Not support ViewModel for $modelClass")
