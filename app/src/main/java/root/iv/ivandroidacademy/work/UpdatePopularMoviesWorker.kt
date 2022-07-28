@@ -7,9 +7,15 @@ import androidx.work.WorkerParameters
 import root.iv.ivandroidacademy.app.App
 import root.iv.ivandroidacademy.data.cache.ConfigurationCache
 import root.iv.ivandroidacademy.data.cache.GenresCache
+import root.iv.ivandroidacademy.data.database.dao.GenresDao
+import root.iv.ivandroidacademy.data.database.dao.ImageConfigDao
+import root.iv.ivandroidacademy.data.database.dao.MoviesDao
 import root.iv.ivandroidacademy.data.database.entity.MovieEntity
 import root.iv.ivandroidacademy.data.mapper.Mapper
+import root.iv.ivandroidacademy.network.client.MovieDBApi
+import root.iv.ivandroidacademy.ui.notify.NotifyPublisher
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * При первом объявлении работы необходимо учитывать параллельный показ списка фильмов, т.е. переобновление БД.
@@ -19,9 +25,21 @@ import timber.log.Timber
 @ExperimentalPagingApi
 class UpdatePopularMoviesWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(ctx, params) {
 
+
+    @Inject
+    lateinit var movieDbApi: MovieDBApi
+    @Inject
+    lateinit var notifyPublisher: NotifyPublisher
+    @Inject
+    lateinit var moviesDao: MoviesDao
+    @Inject
+    lateinit var genresDao: GenresDao
+    @Inject
+    lateinit var imageConfigDao: ImageConfigDao
+
     // Caches
-    private val genresCache = GenresCache(App.movieDBApi, App.genresDao, Mapper)
-    private val configurationCache = ConfigurationCache(App.movieDBApi, App.imageConfigDao, Mapper)
+    private val genresCache = GenresCache(movieDbApi, genresDao, Mapper)
+    private val configurationCache = ConfigurationCache(movieDbApi, imageConfigDao, Mapper)
 
     companion object {
         const val NAME = "update-popular-movies-work"
@@ -39,7 +57,7 @@ class UpdatePopularMoviesWorker(ctx: Context, params: WorkerParameters): Corouti
         val bestMovies = mutableListOf<MovieEntity>()
 
         (1..UPDATE_PAGE_COUNT)
-            .map { page -> App.movieDBApi.moviesPopular(page) }
+            .map { page -> movieDbApi.moviesPopular(page) }
             .map { movies ->
                 movies.data.map { dto ->
                     val genres = genresCache.get().filter { g -> dto.genreIds.contains(g.id) }
@@ -51,7 +69,7 @@ class UpdatePopularMoviesWorker(ctx: Context, params: WorkerParameters): Corouti
 
         bestMovies
             .maxByOrNull { it.rating }
-            ?.apply { App.notifyPublisher.notifyPopularMovie(applicationContext, this) }
+            ?.apply { notifyPublisher.notifyPopularMovie(applicationContext, this) }
 
         Timber.d("Updated successful")
         Result.success()
@@ -72,14 +90,14 @@ class UpdatePopularMoviesWorker(ctx: Context, params: WorkerParameters): Corouti
         var bestMovie: MovieEntity? = null
         this.map { entity ->
             entity
-                .apply { this.dbId = App.moviesDao.idByMovieId(this.id) }
+                .apply { this.dbId = moviesDao.idByMovieId(this.id) }
                 .also {
                     if (it.dbId == null && it.rating > (bestMovie?.rating ?: -1.0)) {
                         bestMovie = it
                     }
                 }
         }.also {
-            App.moviesDao.insertAll(it)
+            moviesDao.insertAll(it)
         }
 
         if (bestMovie == null)

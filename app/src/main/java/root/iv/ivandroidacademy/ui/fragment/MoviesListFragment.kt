@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 import root.iv.ivandroidacademy.R
+import root.iv.ivandroidacademy.app.App
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FragmentMoviesListBinding
 import root.iv.ivandroidacademy.di.component.GlobalComponent
@@ -65,7 +66,7 @@ class MoviesListFragment: Fragment() {
 
     override fun onStart() {
         super.onStart()
-        moviesViewModel = ViewModelProvider(this, ViewModelFactory(GlobalComponent.component(requireContext())))[MoviesListViewModel::class.java]
+        moviesViewModel = ViewModelProvider(this, ViewModelFactory(App.globalComponent))[MoviesListViewModel::class.java]
         loadMovies()
 
         val isOnline = requireContext().isOnline()

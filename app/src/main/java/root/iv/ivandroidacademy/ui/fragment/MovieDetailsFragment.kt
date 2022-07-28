@@ -19,6 +19,7 @@ import coil.load
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import root.iv.ivandroidacademy.R
+import root.iv.ivandroidacademy.app.App
 import root.iv.ivandroidacademy.data.model.Actor
 import root.iv.ivandroidacademy.data.model.Movie
 import root.iv.ivandroidacademy.databinding.FragmentMovieDetailsBinding
@@ -85,7 +86,7 @@ class MovieDetailsFragment: Fragment() {
 
     override fun onStart() {
         super.onStart()
-        movieDetailsViewModel = ViewModelProvider(this, ViewModelFactory(GlobalComponent.component(requireContext())))[MovieDetailsViewModel::class.java]
+        movieDetailsViewModel = ViewModelProvider(this, ViewModelFactory(App.globalComponent))[MovieDetailsViewModel::class.java]
         movieDetailsViewModel.loadDetails(movieId)
     }
 
